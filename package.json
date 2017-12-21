@@ -1,0 +1,11 @@
+{
+  "name": "miraidenshi-reports",
+  "version": "1.0.0",
+  "description": "Reports from the Tech team",
+  "main": "index.js",
+  "author": "Adrien Lemaire <lemaire.adrien@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "impress": "^0.4.29"
+  }
+}
