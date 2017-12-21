@@ -1,14 +1,17 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import impress from "impress.js";
-import Report201712 from "reports/201712";
+import Report201712 from "./presentations/201712";
 
 
-const Root = () => (
-  <div id="ingress" data-transition-duration="1000" data-autoplay="10">
-    <Report201712 />
-  </div>
-);
+class Root extends Component {
+  render() {
+    return (
+      <div id="ingress" data-transition-duration="1000" data-autoplay="10">
+        <Report201712 />
+      </div>
+    );
+  }
+}
 
-impress().init();
-ReactDOM.render(<Root />, document.getElementById("#root")));
+ReactDOM.render(<Root />, document.getElementById("root"));
