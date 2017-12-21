@@ -8,17 +8,23 @@ const config = {
     'babel-regenerator-runtime',
     path.resolve(__dirname, 'src/index.js'),
   ],
-  module: { rules: [{
-    test: /\.js$/,
-    exclude: /node_modules/,
-    loader: 'babel-loader',
-    query: {
-      presets: [
-        'es2015',
-        'react',
-      ],
+  module: { rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+      query: {
+        presets: [
+          'es2015',
+          'react',
+        ],
+      },
     },
-  }]},
+    {
+      test: /\.css$/,
+      use: [ 'style-loader', 'css-loader' ]
+    }
+  ]},
   output: {
     filename: 'bundle.js',
     path: path.resolve('./dist/'),

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import impress from "impress.js";
+import 'impress.js/css/impress-demo.css';
 import Report201712 from "./presentations/201712";
 
 
