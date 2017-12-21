@@ -8,21 +8,9 @@ import Report201712 from "./presentations/201712";
 
 class Root extends Component {
   render() {
-    return (
-      <div>
-        <div id="impress" data-transition-duration="1000" data-autoplay="10">
-          <Report201712 />
-        </div>
-        <div id="impress-toolbar"></div>
-        <div className="impress-progressbar">
-          <div></div>
-        </div>
-        <div className="impress-progress"></div>
-        <div id="impress-help"></div>
-      </div>
-    );
+    return <Report201712 />;
   }
 }
 
-ReactDOM.render(<Root />, document.getElementById("root"));
-window.impress('impress').init();
+ReactDOM.render(<Root />, document.getElementById("impress"));
+impress().init();
