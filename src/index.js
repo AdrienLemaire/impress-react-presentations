@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import impress from "impress.js";
 import Report201712 from "reports/201712";
 
 
@@ -9,4 +10,5 @@ const Root = () => (
   </div>
 );
 
+impress().init();
 ReactDOM.render(<Root />, document.getElementById("#root")));
