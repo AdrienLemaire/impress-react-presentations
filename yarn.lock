@@ -1497,6 +1497,13 @@ fbjs@^0.8.16:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
+file-loader@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-1.1.6.tgz#7b9a8f2c58f00a77fddf49e940f7ac978a3ea0e8"
+  dependencies:
+    loader-utils "^1.0.2"
+    schema-utils "^0.3.0"
+
 filename-regex@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.1.tgz#c1c4b9bee3e09725ddb106b75c1e301fe2f18b26"
@@ -1803,6 +1810,10 @@ ieee754@^1.1.4:
 impress.js@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/impress.js/-/impress.js-0.6.0.tgz#5211da4976408bb5b844eefc2914d9d4fe927e91"
+
+"impress.js@https://github.com/impress/impress.js.git#1.0.0-beta1":
+  version "1.0.0-beta1"
+  resolved "https://github.com/impress/impress.js.git#7354dbf5fc9ac2e44d9485d737ceb0966c18e24e"
 
 indexes-of@^1.0.1:
   version "1.0.1"

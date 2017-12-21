@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -303,9 +303,9 @@ module.exports = emptyFunction;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(18);
+  module.exports = __webpack_require__(20);
 } else {
-  module.exports = __webpack_require__(19);
+  module.exports = __webpack_require__(21);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -562,6 +562,88 @@ module.exports = warning;
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -577,7 +659,7 @@ module.exports = warning;
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(5);
   var warning = __webpack_require__(6);
-  var ReactPropTypesSecret = __webpack_require__(20);
+  var ReactPropTypesSecret = __webpack_require__(22);
   var loggedTypeFailures = {};
 }
 
@@ -628,7 +710,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -667,7 +749,7 @@ var ExecutionEnvironment = {
 module.exports = ExecutionEnvironment;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -748,7 +830,7 @@ module.exports = EventListener;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -790,7 +872,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -861,7 +943,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -876,7 +958,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(23);
+var isTextNode = __webpack_require__(25);
 
 /*eslint-disable no-bitwise */
 
@@ -904,7 +986,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -934,15 +1016,387 @@ function focusNode(node) {
 module.exports = focusNode;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(15);
-module.exports = __webpack_require__(17);
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(selector) {
+		if (typeof memo[selector] === "undefined") {
+			var styleTarget = fn.call(this, selector);
+			// Special case to return head of iframe instead of iframe itself
+			if (styleTarget instanceof window.HTMLIFrameElement) {
+				try {
+					// This will throw an exception if access to iframe is blocked
+					// due to cross-origin restrictions
+					styleTarget = styleTarget.contentDocument.head;
+				} catch(e) {
+					styleTarget = null;
+				}
+			}
+			memo[selector] = styleTarget;
+		}
+		return memo[selector]
+	};
+})(function (target) {
+	return document.querySelector(target)
+});
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(35);
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
+		var nextSibling = getElement(options.insertInto + " " + options.insertAt.before);
+		target.insertBefore(style, nextSibling);
+	} else {
+		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	options.attrs.type = "text/css";
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = options.transform(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
 
 
 /***/ }),
-/* 15 */
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(17);
+module.exports = __webpack_require__(19);
+
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {/**
@@ -1603,10 +2057,10 @@ module.exports = __webpack_require__(17);
   typeof self === "object" ? self : this
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(0)))
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1633,7 +2087,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1645,17 +2099,17 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(21);
+var _reactDom = __webpack_require__(23);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _impress = __webpack_require__(30);
+__webpack_require__(32);
 
-var _impress2 = _interopRequireDefault(_impress);
+__webpack_require__(33);
 
-__webpack_require__(31);
+__webpack_require__(36);
 
-var _ = __webpack_require__(36);
+var _ = __webpack_require__(41);
 
 var _2 = _interopRequireDefault(_);
 
@@ -1681,8 +2135,20 @@ var Root = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         "div",
-        { id: "ingress", "data-transition-duration": "1000", "data-autoplay": "10" },
-        _react2.default.createElement(_2.default, null)
+        null,
+        _react2.default.createElement(
+          "div",
+          { id: "impress", "data-transition-duration": "1000", "data-autoplay": "10" },
+          _react2.default.createElement(_2.default, null)
+        ),
+        _react2.default.createElement("div", { id: "impress-toolbar" }),
+        _react2.default.createElement(
+          "div",
+          { className: "impress-progressbar" },
+          _react2.default.createElement("div", null)
+        ),
+        _react2.default.createElement("div", { className: "impress-progress" }),
+        _react2.default.createElement("div", { id: "impress-help" })
       );
     }
   }]);
@@ -1691,9 +2157,10 @@ var Root = function (_Component) {
 }(_react.Component);
 
 _reactDom2.default.render(_react2.default.createElement(Root, null), document.getElementById("root"));
+window.impress('impress').init();
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1721,7 +2188,7 @@ isValidElement:K,version:"16.2.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_F
 
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1747,7 +2214,7 @@ var emptyObject = __webpack_require__(4);
 var invariant = __webpack_require__(5);
 var warning = __webpack_require__(6);
 var emptyFunction = __webpack_require__(1);
-var checkPropTypes = __webpack_require__(7);
+var checkPropTypes = __webpack_require__(8);
 
 // TODO: this is special because it gets imported during build.
 
@@ -3086,7 +3553,7 @@ module.exports = react;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3105,7 +3572,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3143,15 +3610,15 @@ if (process.env.NODE_ENV === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(22);
+  module.exports = __webpack_require__(24);
 } else {
-  module.exports = __webpack_require__(25);
+  module.exports = __webpack_require__(27);
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3167,7 +3634,7 @@ if (process.env.NODE_ENV === 'production') {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(2),l=__webpack_require__(8),B=__webpack_require__(3),C=__webpack_require__(1),ba=__webpack_require__(9),da=__webpack_require__(10),ea=__webpack_require__(11),fa=__webpack_require__(12),ia=__webpack_require__(13),D=__webpack_require__(4);
+var aa=__webpack_require__(2),l=__webpack_require__(9),B=__webpack_require__(3),C=__webpack_require__(1),ba=__webpack_require__(10),da=__webpack_require__(11),ea=__webpack_require__(12),fa=__webpack_require__(13),ia=__webpack_require__(14),D=__webpack_require__(4);
 function E(a){for(var b=arguments.length-1,c="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);b=Error(c+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}aa?void 0:E("227");
 var oa={children:!0,dangerouslySetInnerHTML:!0,defaultValue:!0,defaultChecked:!0,innerHTML:!0,suppressContentEditableWarning:!0,suppressHydrationWarning:!0,style:!0};function pa(a,b){return(a&b)===b}
 var ta={MUST_USE_PROPERTY:1,HAS_BOOLEAN_VALUE:4,HAS_NUMERIC_VALUE:8,HAS_POSITIVE_NUMERIC_VALUE:24,HAS_OVERLOADED_BOOLEAN_VALUE:32,HAS_STRING_BOOLEAN_VALUE:64,injectDOMPropertyConfig:function(a){var b=ta,c=a.Properties||{},d=a.DOMAttributeNamespaces||{},e=a.DOMAttributeNames||{};a=a.DOMMutationMethods||{};for(var f in c){ua.hasOwnProperty(f)?E("48",f):void 0;var g=f.toLowerCase(),h=c[f];g={attributeName:g,attributeNamespace:null,propertyName:f,mutationMethod:null,mustUseProperty:pa(h,b.MUST_USE_PROPERTY),
@@ -3387,7 +3854,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
 
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3402,7 +3869,7 @@ Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",r
  * @typechecks
  */
 
-var isNode = __webpack_require__(24);
+var isNode = __webpack_require__(26);
 
 /**
  * @param {*} object The object to check.
@@ -3415,7 +3882,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3443,7 +3910,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3467,18 +3934,18 @@ if (process.env.NODE_ENV !== "production") {
 var React = __webpack_require__(2);
 var invariant = __webpack_require__(5);
 var warning = __webpack_require__(6);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var _assign = __webpack_require__(3);
 var emptyFunction = __webpack_require__(1);
-var EventListener = __webpack_require__(9);
-var getActiveElement = __webpack_require__(10);
-var shallowEqual = __webpack_require__(11);
-var containsNode = __webpack_require__(12);
-var focusNode = __webpack_require__(13);
+var EventListener = __webpack_require__(10);
+var getActiveElement = __webpack_require__(11);
+var shallowEqual = __webpack_require__(12);
+var containsNode = __webpack_require__(13);
+var focusNode = __webpack_require__(14);
 var emptyObject = __webpack_require__(4);
-var checkPropTypes = __webpack_require__(7);
-var hyphenateStyleName = __webpack_require__(26);
-var camelizeStyleName = __webpack_require__(28);
+var checkPropTypes = __webpack_require__(8);
+var hyphenateStyleName = __webpack_require__(28);
+var camelizeStyleName = __webpack_require__(30);
 
 /**
  * WARNING: DO NOT manually require this module.
@@ -18845,7 +19312,7 @@ module.exports = reactDom;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18860,7 +19327,7 @@ module.exports = reactDom;
 
 
 
-var hyphenate = __webpack_require__(27);
+var hyphenate = __webpack_require__(29);
 
 var msPattern = /^ms-/;
 
@@ -18887,7 +19354,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18923,7 +19390,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18938,7 +19405,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(29);
+var camelize = __webpack_require__(31);
 
 var msPattern = /^-ms-/;
 
@@ -18966,7 +19433,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19001,7 +19468,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /**
@@ -19017,18 +19484,16 @@ module.exports = camelize;
  *
  * ------------------------------------------------
  *  author:  Bartek Szopka
- *  version: 0.5.3
+ *  version: 1.0.0-beta1
  *  url:     http://bartaz.github.com/impress.js/
  *  source:  http://github.com/bartaz/impress.js/
  */
-
-/*jshint bitwise:true, curly:true, eqeqeq:true, forin:true, latedef:true, newcap:true,
-         noarg:true, noempty:true, undef:true, strict:true, browser:true */
 
 // You are one of those who like to know how things work inside?
 // Let me show you the cogs that make impress.js run...
 ( function( document, window ) {
     "use strict";
+    var lib;
 
     // HELPER FUNCTIONS
 
@@ -19062,10 +19527,26 @@ module.exports = camelize;
 
     } )();
 
-    // `arraify` takes an array-like object and turns it into real Array
-    // to make all the Array.prototype goodness available.
-    var arrayify = function( a ) {
-        return [].slice.call( a );
+    var validateOrder = function( order, fallback ) {
+        var validChars = "xyz";
+        var returnStr = "";
+        if ( typeof order === "string" ) {
+            for ( var i in order.split( "" ) ) {
+                if ( validChars.indexOf( order[ i ] >= 0 ) ) {
+                    returnStr += order[ i ];
+
+                    // Each of x,y,z can be used only once.
+                    validChars = validChars.split( order[ i ] ).join( "" );
+                }
+            }
+        }
+        if ( returnStr ) {
+            return returnStr;
+        } else if ( fallback !== undefined ) {
+            return fallback;
+        } else {
+            return "xyz";
+        }
     };
 
     // `css` function applies the styles given in `props` object to the element
@@ -19084,40 +19565,6 @@ module.exports = camelize;
         return el;
     };
 
-    // `toNumber` takes a value given as `numeric` parameter and tries to turn
-    // it into a number. If it is not possible it returns 0 (or other value
-    // given as `fallback`).
-    var toNumber = function( numeric, fallback ) {
-        return isNaN( numeric ) ? ( fallback || 0 ) : Number( numeric );
-    };
-
-    // `byId` returns element with given `id` - you probably have guessed that ;)
-    var byId = function( id ) {
-        return document.getElementById( id );
-    };
-
-    // `$` returns first element for given CSS `selector` in the `context` of
-    // the given element or whole document.
-    var $ = function( selector, context ) {
-        context = context || document;
-        return context.querySelector( selector );
-    };
-
-    // `$$` return an array of elements for given CSS `selector` in the `context` of
-    // the given element or whole document.
-    var $$ = function( selector, context ) {
-        context = context || document;
-        return arrayify( context.querySelectorAll( selector ) );
-    };
-
-    // `triggerEvent` builds a custom DOM event with given `eventName` and `detail` data
-    // and triggers it on element given as `el`.
-    var triggerEvent = function( el, eventName, detail ) {
-        var event = document.createEvent( "CustomEvent" );
-        event.initCustomEvent( eventName, true, true, detail );
-        el.dispatchEvent( event );
-    };
-
     // `translate` builds a translate transform string for given data.
     var translate = function( t ) {
         return " translate3d(" + t.x + "px," + t.y + "px," + t.z + "px) ";
@@ -19127,30 +19574,22 @@ module.exports = camelize;
     // By default the rotations are in X Y Z order that can be reverted by passing `true`
     // as second parameter.
     var rotate = function( r, revert ) {
-        var rX = " rotateX(" + r.x + "deg) ",
-            rY = " rotateY(" + r.y + "deg) ",
-            rZ = " rotateZ(" + r.z + "deg) ";
+        var order = r.order ? r.order : "xyz";
+        var css = "";
+        var axes = order.split( "" );
+        if ( revert ) {
+            axes = axes.reverse();
+        }
 
-        return revert ? rZ + rY + rX : rX + rY + rZ;
+        for ( var i = 0; i < axes.length; i++ ) {
+            css += " rotate" + axes[ i ].toUpperCase() + "(" + r[ axes[ i ] ] + "deg)";
+        }
+        return css;
     };
 
     // `scale` builds a scale transform string for given data.
     var scale = function( s ) {
         return " scale(" + s + ") ";
-    };
-
-    // `perspective` builds a perspective transform string for given data.
-    var perspective = function( p ) {
-        return " perspective(" + p + "px) ";
-    };
-
-    // `getElementFromHash` returns an element located by id from hash part of
-    // window location.
-    var getElementFromHash = function() {
-
-        // Get id from url # by removing `#` or `#/` from the beginning,
-        // so both "fallback" `#slide-id` and "enhanced" `#/slide-id` will work
-        return byId( window.location.hash.replace( /^#\/?/, "" ) );
     };
 
     // `computeWindowScale` counts the scale factor between window size and size
@@ -19173,29 +19612,19 @@ module.exports = camelize;
 
     // CHECK SUPPORT
     var body = document.body;
-
-    var ua = navigator.userAgent.toLowerCase();
     var impressSupported =
 
                           // Browser should support CSS 3D transtorms
                            ( pfx( "perspective" ) !== null ) &&
 
-                          // Browser should support `classList` and `dataset` APIs
+                          // And `classList` and `dataset` APIs
                            ( body.classList ) &&
-                           ( body.dataset ) &&
-
-                          // But some mobile devices need to be blacklisted,
-                          // because their CSS 3D support or hardware is not
-                          // good enough to run impress.js properly, sorry...
-                           ( ua.search( /(iphone)|(ipod)|(android)/ ) === -1 );
+                           ( body.dataset );
 
     if ( !impressSupported ) {
 
         // We can't be sure that `classList` is supported
         body.className += " impress-not-supported ";
-    } else {
-        body.classList.remove( "impress-not-supported" );
-        body.classList.add( "impress-supported" );
     }
 
     // GLOBALS AND DEFAULTS
@@ -19204,6 +19633,9 @@ module.exports = camelize;
     // Yes, this means you can have more than one instance on a page, but I'm not
     // sure if it makes any sense in practice ;)
     var roots = {};
+
+    var preInitPlugins = [];
+    var preStepLeavePlugins = [];
 
     // Some default config values.
     var defaults = {
@@ -19224,7 +19656,7 @@ module.exports = camelize;
 
     // And that's where interesting things will start to happen.
     // It's the core `impress` function that returns the impress.js API
-    // for a presentation based on the element with given id ('impress'
+    // for a presentation based on the element with given id ("impress"
     // by default).
     var impress = window.impress = function( rootId ) {
 
@@ -19236,7 +19668,10 @@ module.exports = camelize;
                 init: empty,
                 goto: empty,
                 prev: empty,
-                next: empty
+                next: empty,
+                swipe: empty,
+                tear: empty,
+                lib: {}
             };
         }
 
@@ -19246,6 +19681,12 @@ module.exports = camelize;
         if ( roots[ "impress-root-" + rootId ] ) {
             return roots[ "impress-root-" + rootId ];
         }
+
+        // The gc library depends on being initialized before we do any changes to DOM.
+        lib = initLibraries( rootId );
+
+        body.classList.remove( "impress-not-supported" );
+        body.classList.add( "impress-supported" );
 
         // Data of all presentation steps
         var stepsData = {};
@@ -19266,7 +19707,7 @@ module.exports = camelize;
         var windowScale = null;
 
         // Root presentation elements
-        var root = byId( rootId );
+        var root = lib.util.byId( rootId );
         var canvas = document.createElement( "div" );
 
         var initialized = false;
@@ -19285,19 +19726,23 @@ module.exports = camelize;
         // `onStepEnter` is called whenever the step element is entered
         // but the event is triggered only if the step is different than
         // last entered step.
+        // We sometimes call `goto`, and therefore `onStepEnter`, just to redraw a step, such as
+        // after screen resize. In this case - more precisely, in any case - we trigger a
+        // `impress:steprefresh` event.
         var onStepEnter = function( step ) {
             if ( lastEntered !== step ) {
-                triggerEvent( step, "impress:stepenter" );
+                lib.util.triggerEvent( step, "impress:stepenter" );
                 lastEntered = step;
             }
+            lib.util.triggerEvent( step, "impress:steprefresh" );
         };
 
-        // `onStepLeave` is called whenever the step element is left
-        // but the event is triggered only if the step is the same as
-        // last entered step.
-        var onStepLeave = function( step ) {
-            if ( lastEntered === step ) {
-                triggerEvent( step, "impress:stepleave" );
+        // `onStepLeave` is called whenever the currentStep element is left
+        // but the event is triggered only if the currentStep is the same as
+        // lastEntered step.
+        var onStepLeave = function( currentStep, nextStep ) {
+            if ( lastEntered === currentStep ) {
+                lib.util.triggerEvent( currentStep, "impress:stepleave", { next: nextStep } );
                 lastEntered = null;
             }
         };
@@ -19308,16 +19753,20 @@ module.exports = camelize;
             var data = el.dataset,
                 step = {
                     translate: {
-                        x: toNumber( data.x ),
-                        y: toNumber( data.y ),
-                        z: toNumber( data.z )
+                        x: lib.util.toNumber( data.x ),
+                        y: lib.util.toNumber( data.y ),
+                        z: lib.util.toNumber( data.z )
                     },
                     rotate: {
-                        x: toNumber( data.rotateX ),
-                        y: toNumber( data.rotateY ),
-                        z: toNumber( data.rotateZ || data.rotate )
+                        x: lib.util.toNumber( data.rotateX ),
+                        y: lib.util.toNumber( data.rotateY ),
+                        z: lib.util.toNumber( data.rotateZ || data.rotate ),
+                        order: validateOrder( data.rotateOrder )
                     },
-                    scale: toNumber( data.scale, 1 ),
+                    scale: lib.util.toNumber( data.scale, 1 ),
+                    transitionDuration: lib.util.toNumber(
+                        data.transitionDuration, config.transitionDuration
+                    ),
                     el: el
                 };
 
@@ -19337,13 +19786,21 @@ module.exports = camelize;
             } );
         };
 
+        // Initialize all steps.
+        // Read the data-* attributes, store in internal stepsData, and render with CSS.
+        var initAllSteps = function() {
+            steps = lib.util.$$( ".step", root );
+            steps.forEach( initStep );
+        };
+
         // `init` API function that initializes (and runs) the presentation.
         var init = function() {
             if ( initialized ) { return; }
+            execPreInitPlugins( root );
 
             // First we set up the viewport for mobile devices.
             // For some reason iPad goes nuts when it is not done properly.
-            var meta = $( "meta[name='viewport']" ) || document.createElement( "meta" );
+            var meta = lib.util.$( "meta[name='viewport']" ) || document.createElement( "meta" );
             meta.content = "width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no";
             if ( meta.parentNode !== document.head ) {
                 meta.name = "viewport";
@@ -19353,20 +19810,20 @@ module.exports = camelize;
             // Initialize configuration object
             var rootData = root.dataset;
             config = {
-                width: toNumber( rootData.width, defaults.width ),
-                height: toNumber( rootData.height, defaults.height ),
-                maxScale: toNumber( rootData.maxScale, defaults.maxScale ),
-                minScale: toNumber( rootData.minScale, defaults.minScale ),
-                perspective: toNumber( rootData.perspective, defaults.perspective ),
-                transitionDuration: toNumber(
-                  rootData.transitionDuration, defaults.transitionDuration
+                width: lib.util.toNumber( rootData.width, defaults.width ),
+                height: lib.util.toNumber( rootData.height, defaults.height ),
+                maxScale: lib.util.toNumber( rootData.maxScale, defaults.maxScale ),
+                minScale: lib.util.toNumber( rootData.minScale, defaults.minScale ),
+                perspective: lib.util.toNumber( rootData.perspective, defaults.perspective ),
+                transitionDuration: lib.util.toNumber(
+                    rootData.transitionDuration, defaults.transitionDuration
                 )
             };
 
             windowScale = computeWindowScale( config );
 
             // Wrap steps with "canvas" element
-            arrayify( root.childNodes ).forEach( function( el ) {
+            lib.util.arrayify( root.childNodes ).forEach( function( el ) {
                 canvas.appendChild( el );
             } );
             root.appendChild( canvas );
@@ -19390,7 +19847,8 @@ module.exports = camelize;
             css( root, {
                 top: "50%",
                 left: "50%",
-                transform: perspective( config.perspective / windowScale ) + scale( windowScale )
+                perspective: ( config.perspective / windowScale ) + "px",
+                transform: scale( windowScale )
             } );
             css( canvas, rootStyles );
 
@@ -19398,19 +19856,19 @@ module.exports = camelize;
             body.classList.add( "impress-enabled" );
 
             // Get and init steps
-            steps = $$( ".step", root );
-            steps.forEach( initStep );
+            initAllSteps();
 
             // Set a default initial state of the canvas
             currentState = {
                 translate: { x: 0, y: 0, z: 0 },
-                rotate:    { x: 0, y: 0, z: 0 },
+                rotate:    { x: 0, y: 0, z: 0, order: "xyz" },
                 scale:     1
             };
 
             initialized = true;
 
-            triggerEvent( root, "impress:init", { api: roots[ "impress-root-" + rootId ] } );
+            lib.util.triggerEvent( root, "impress:init",
+                                   { api: roots[ "impress-root-" + rootId ] } );
         };
 
         // `getStep` is a helper function that returns a step element defined by parameter.
@@ -19421,7 +19879,7 @@ module.exports = camelize;
             if ( typeof step === "number" ) {
                 step = step < 0 ? steps[ steps.length + step ] : steps[ step ];
             } else if ( typeof step === "string" ) {
-                step = byId( step );
+                step = lib.util.byId( step );
             }
             return ( step && step.id && stepsData[ "impress-" + step.id ] ) ? step : null;
         };
@@ -19429,14 +19887,25 @@ module.exports = camelize;
         // Used to reset timeout for `impress:stepenter` event
         var stepEnterTimeout = null;
 
-        // `goto` API function that moves to step given with `el` parameter
-        // (by index, id or element), with a transition `duration` optionally
-        // given as second parameter.
-        var goto = function( el, duration ) {
+        // `goto` API function that moves to step given as `el` parameter (by index, id or element).
+        // `duration` optionally given as second parameter, is the transition duration in css.
+        // `reason` is the string "next", "prev" or "goto" (default) and will be made available to
+        // preStepLeave plugins.
+        // `origEvent` may contain event that caused the call to goto, such as a key press event
+        var goto = function( el, duration, reason, origEvent ) {
+            reason = reason || "goto";
+            origEvent = origEvent || null;
 
-            if ( !initialized || !( el = getStep( el ) ) ) {
+            if ( !initialized ) {
+                return false;
+            }
 
-                // Presentation not initialized or given element is not a step
+            // Re-execute initAllSteps for each transition. This allows to edit step attributes
+            // dynamically, such as change their coordinates, or even remove or add steps, and have
+            // that change apply when goto() is called.
+            initAllSteps();
+
+            if ( !( el = getStep( el ) ) ) {
                 return false;
             }
 
@@ -19452,6 +19921,32 @@ module.exports = camelize;
             window.scrollTo( 0, 0 );
 
             var step = stepsData[ "impress-" + el.id ];
+            duration = ( duration !== undefined ? duration : step.transitionDuration );
+
+            // If we are in fact moving to another step, start with executing the registered
+            // preStepLeave plugins.
+            if ( activeStep && activeStep !== el ) {
+                var event = { target: activeStep, detail: {} };
+                event.detail.next = el;
+                event.detail.transitionDuration = duration;
+                event.detail.reason = reason;
+                if ( origEvent ) {
+                    event.origEvent = origEvent;
+                }
+
+                if ( execPreStepLeavePlugins( event ) === false ) {
+
+                    // PreStepLeave plugins are allowed to abort the transition altogether, by
+                    // returning false.
+                    // see stop and substep plugins for an example of doing just that
+                    return false;
+                }
+
+                // Plugins are allowed to change the detail values
+                el = event.detail.next;
+                step = stepsData[ "impress-" + el.id ];
+                duration = event.detail.transitionDuration;
+            }
 
             if ( activeStep ) {
                 activeStep.classList.remove( "active" );
@@ -19466,7 +19961,8 @@ module.exports = camelize;
                 rotate: {
                     x: -step.rotate.x,
                     y: -step.rotate.y,
-                    z: -step.rotate.z
+                    z: -step.rotate.z,
+                    order: step.rotate.order
                 },
                 translate: {
                     x: -step.translate.x,
@@ -19484,7 +19980,7 @@ module.exports = camelize;
             // with scaling down and move and rotation are delayed.
             var zoomin = target.scale >= currentState.scale;
 
-            duration = toNumber( duration, config.transitionDuration );
+            duration = lib.util.toNumber( duration, config.transitionDuration );
             var delay = ( duration / 2 );
 
             // If the same step is re-selected, force computing window scaling,
@@ -19497,7 +19993,7 @@ module.exports = camelize;
 
             // Trigger leave of currently active element (if it's not the same step again)
             if ( activeStep && activeStep !== el ) {
-                onStepLeave( activeStep );
+                onStepLeave( activeStep, el );
             }
 
             // Now we alter transforms of `root` and `canvas` to trigger transitions.
@@ -19506,13 +20002,16 @@ module.exports = camelize;
             // being animated separately:
             // `root` is used for scaling and `canvas` for translate and rotations.
             // Transitions on them are triggered with different delays (to make
-            // visually nice and 'natural' looking transitions), so we need to know
+            // visually nice and "natural" looking transitions), so we need to know
             // that both of them are finished.
             css( root, {
 
                 // To keep the perspective look similar for different scales
-                // we need to 'scale' the perspective, too
-                transform: perspective( config.perspective / targetScale ) + scale( targetScale ),
+                // we need to "scale" the perspective, too
+                // For IE 11 support we must specify perspective independent
+                // of transform.
+                perspective: ( config.perspective / targetScale ) + "px",
+                transform: scale( targetScale ),
                 transitionDuration: duration + "ms",
                 transitionDelay: ( zoomin ? delay : 0 ) + "ms"
             } );
@@ -19532,8 +20031,7 @@ module.exports = camelize;
             // account.
             //
             // I know that this `if` statement looks scary, but it's pretty simple when you know
-            // what is going on
-            // - it's simply comparing all the values.
+            // what is going on - it's simply comparing all the values.
             if ( currentState.scale === target.scale ||
                 ( currentState.rotate.x === target.rotate.x &&
                   currentState.rotate.y === target.rotate.y &&
@@ -19549,22 +20047,20 @@ module.exports = camelize;
             activeStep = el;
 
             // And here is where we trigger `impress:stepenter` event.
-            // We simply set up a timeout to fire it taking transition duration
-            // (and possible delay) into account.
+            // We simply set up a timeout to fire it taking transition duration (and possible delay)
+            // into account.
             //
             // I really wanted to make it in more elegant way. The `transitionend` event seemed to
             // be the best way to do it, but the fact that I'm using transitions on two separate
             // elements and that the `transitionend` event is only triggered when there was a
             // transition (change in the values) caused some bugs and made the code really
             // complicated, cause I had to handle all the conditions separately. And it still
-            // needed a `setTimeout` fallback for the situations when there is no transition at
-            // all.
+            // needed a `setTimeout` fallback for the situations when there is no transition at all.
             // So I decided that I'd rather make the code simpler than use shiny new
             // `transitionend`.
             //
             // If you want learn something interesting and see how it was done with `transitionend`
-            // go back to
-            // version 0.5.2 of impress.js:
+            // go back to version 0.5.2 of impress.js:
             // http://github.com/bartaz/impress.js/blob/0.5.2/js/impress.js
             window.clearTimeout( stepEnterTimeout );
             stepEnterTimeout = window.setTimeout( function() {
@@ -19575,19 +20071,138 @@ module.exports = camelize;
         };
 
         // `prev` API function goes to previous step (in document order)
-        var prev = function() {
+        // `event` is optional, may contain the event that caused the need to call prev()
+        var prev = function( origEvent ) {
             var prev = steps.indexOf( activeStep ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length - 1 ];
 
-            return goto( prev );
+            return goto( prev, undefined, "prev", origEvent );
         };
 
         // `next` API function goes to next step (in document order)
-        var next = function() {
+        // `event` is optional, may contain the event that caused the need to call next()
+        var next = function( origEvent ) {
             var next = steps.indexOf( activeStep ) + 1;
             next = next < steps.length ? steps[ next ] : steps[ 0 ];
 
-            return goto( next );
+            return goto( next, undefined, "next", origEvent );
+        };
+
+        // Swipe for touch devices by @and3rson.
+        // Below we extend the api to control the animation between the currently
+        // active step and a presumed next/prev step. See touch plugin for
+        // an example of using this api.
+
+        // Helper function
+        var interpolate = function( a, b, k ) {
+            return a + ( b - a ) * k;
+        };
+
+        // Animate a swipe.
+        //
+        // Pct is a value between -1.0 and +1.0, designating the current length
+        // of the swipe.
+        //
+        // If pct is negative, swipe towards the next() step, if positive,
+        // towards the prev() step.
+        //
+        // Note that pre-stepleave plugins such as goto can mess with what is a
+        // next() and prev() step, so we need to trigger the pre-stepleave event
+        // here, even if a swipe doesn't guarantee that the transition will
+        // actually happen.
+        //
+        // Calling swipe(), with any value of pct, won't in itself cause a
+        // transition to happen, this is just to animate the swipe. Once the
+        // transition is committed - such as at a touchend event - caller is
+        // responsible for also calling prev()/next() as appropriate.
+        //
+        // Note: For now, this function is made available to be used by the swipe plugin (which
+        // is the UI counterpart to this). It is a semi-internal API and intentionally not
+        // documented in DOCUMENTATION.md.
+        var swipe = function( pct ) {
+            if ( Math.abs( pct ) > 1 ) {
+                return;
+            }
+
+            // Prepare & execute the preStepLeave event
+            var event = { target: activeStep, detail: {} };
+            event.detail.swipe = pct;
+
+            // Will be ignored within swipe animation, but just in case a plugin wants to read this,
+            // humor them
+            event.detail.transitionDuration = config.transitionDuration;
+            var idx; // Needed by jshint
+            if ( pct < 0 ) {
+                idx = steps.indexOf( activeStep ) + 1;
+                event.detail.next = idx < steps.length ? steps[ idx ] : steps[ 0 ];
+                event.detail.reason = "next";
+            } else if ( pct > 0 ) {
+                idx = steps.indexOf( activeStep ) - 1;
+                event.detail.next = idx >= 0 ? steps[ idx ] : steps[ steps.length - 1 ];
+                event.detail.reason = "prev";
+            } else {
+
+                // No move
+                return;
+            }
+            if ( execPreStepLeavePlugins( event ) === false ) {
+
+                // If a preStepLeave plugin wants to abort the transition, don't animate a swipe
+                // For stop, this is probably ok. For substep, the plugin it self might want to do
+                // some animation, but that's not the current implementation.
+                return false;
+            }
+            var nextElement = event.detail.next;
+
+            var nextStep = stepsData[ "impress-" + nextElement.id ];
+
+            // If the same step is re-selected, force computing window scaling,
+            var nextScale = nextStep.scale * windowScale;
+            var k = Math.abs( pct );
+
+            var interpolatedStep = {
+                translate: {
+                    x: interpolate( currentState.translate.x, -nextStep.translate.x, k ),
+                    y: interpolate( currentState.translate.y, -nextStep.translate.y, k ),
+                    z: interpolate( currentState.translate.z, -nextStep.translate.z, k )
+                },
+                rotate: {
+                    x: interpolate( currentState.rotate.x, -nextStep.rotate.x, k ),
+                    y: interpolate( currentState.rotate.y, -nextStep.rotate.y, k ),
+                    z: interpolate( currentState.rotate.z, -nextStep.rotate.z, k ),
+
+                    // Unfortunately there's a discontinuity if rotation order changes. Nothing I
+                    // can do about it?
+                    order: k < 0.7 ? currentState.rotate.order : nextStep.rotate.order
+                },
+                scale: interpolate( currentState.scale, nextScale, k )
+            };
+
+            css( root, {
+
+                // To keep the perspective look similar for different scales
+                // we need to 'scale' the perspective, too
+                perspective: config.perspective / interpolatedStep.scale + "px",
+                transform: scale( interpolatedStep.scale ),
+                transitionDuration: "0ms",
+                transitionDelay: "0ms"
+            } );
+
+            css( canvas, {
+                transform: rotate( interpolatedStep.rotate, true ) +
+                           translate( interpolatedStep.translate ),
+                transitionDuration: "0ms",
+                transitionDelay: "0ms"
+            } );
+        };
+
+        // Teardown impress
+        // Resets the DOM to the state it was before impress().init() was called.
+        // (If you called impress(rootId).init() for multiple different rootId's, then you must
+        // also call tear() once for each of them.)
+        var tear = function() {
+            lib.gc.teardown();
+            delete roots[ "impress-root-" + rootId ];
         };
 
         // Adding some useful classes to step elements.
@@ -19603,20 +20218,20 @@ module.exports = camelize;
         // There classes can be used in CSS to style different types of steps.
         // For example the `present` class can be used to trigger some custom
         // animations when step is shown.
-        root.addEventListener( "impress:init", function() {
+        lib.gc.addEventListener( root, "impress:init", function() {
 
             // STEP CLASSES
             steps.forEach( function( step ) {
                 step.classList.add( "future" );
             } );
 
-            root.addEventListener( "impress:stepenter", function( event ) {
+            lib.gc.addEventListener( root, "impress:stepenter", function( event ) {
                 event.target.classList.remove( "past" );
                 event.target.classList.remove( "future" );
                 event.target.classList.add( "present" );
             }, false );
 
-            root.addEventListener( "impress:stepleave", function( event ) {
+            lib.gc.addEventListener( root, "impress:stepleave", function( event ) {
                 event.target.classList.remove( "present" );
                 event.target.classList.add( "past" );
             }, false );
@@ -19624,7 +20239,7 @@ module.exports = camelize;
         }, false );
 
         // Adding hash change support.
-        root.addEventListener( "impress:init", function() {
+        lib.gc.addEventListener( root, "impress:init", function() {
 
             // Last hash detected
             var lastHash = "";
@@ -19635,11 +20250,11 @@ module.exports = camelize;
             // And it has to be set after animation finishes, because in Chrome it
             // makes transtion laggy.
             // BUG: http://code.google.com/p/chromium/issues/detail?id=62820
-            root.addEventListener( "impress:stepenter", function( event ) {
+            lib.gc.addEventListener( root, "impress:stepenter", function( event ) {
                 window.location.hash = lastHash = "#/" + event.target.id;
             }, false );
 
-            window.addEventListener( "hashchange", function() {
+            lib.gc.addEventListener( window, "hashchange", function() {
 
                 // When the step is entered hash in the location is updated
                 // (just few lines above from here), so the hash change is
@@ -19647,13 +20262,13 @@ module.exports = camelize;
                 //
                 // To avoid this we store last entered hash and compare.
                 if ( window.location.hash !== lastHash ) {
-                    goto( getElementFromHash() );
+                    goto( lib.util.getElementFromHash() );
                 }
             }, false );
 
             // START
             // by selecting step defined in url or first step of the presentation
-            goto( getElementFromHash() || steps[ 0 ], 0 );
+            goto( lib.util.getElementFromHash() || steps[ 0 ], 0 );
         }, false );
 
         body.classList.add( "impress-disabled" );
@@ -19663,7 +20278,10 @@ module.exports = camelize;
             init: init,
             goto: goto,
             next: next,
-            prev: prev
+            prev: prev,
+            swipe: swipe,
+            tear: tear,
+            lib: lib
         } );
 
     };
@@ -19671,31 +20289,2049 @@ module.exports = camelize;
     // Flag that can be used in JS to check if browser have passed the support test
     impress.supported = impressSupported;
 
+    // ADD and INIT LIBRARIES
+    // Library factories are defined in src/lib/*.js, and register themselves by calling
+    // impress.addLibraryFactory(libraryFactoryObject). They're stored here, and used to augment
+    // the API with library functions when client calls impress(rootId).
+    // See src/lib/README.md for clearer example.
+    // (Advanced usage: For different values of rootId, a different instance of the libaries are
+    // generated, in case they need to hold different state for different root elements.)
+    var libraryFactories = {};
+    impress.addLibraryFactory = function( obj ) {
+        for ( var libname in obj ) {
+            if ( obj.hasOwnProperty( libname ) ) {
+                libraryFactories[ libname ] = obj[ libname ];
+            }
+        }
+    };
+
+    // Call each library factory, and return the lib object that is added to the api.
+    var initLibraries = function( rootId ) { //jshint ignore:line
+        var lib = {};
+        for ( var libname in libraryFactories ) {
+            if ( libraryFactories.hasOwnProperty( libname ) ) {
+                if ( lib[ libname ] !== undefined ) {
+                    throw "impress.js ERROR: Two libraries both tried to use libname: " +  libname;
+                }
+                lib[ libname ] = libraryFactories[ libname ]( rootId );
+            }
+        }
+        return lib;
+    };
+
+    // `addPreInitPlugin` allows plugins to register a function that should
+    // be run (synchronously) at the beginning of init, before
+    // impress().init() itself executes.
+    impress.addPreInitPlugin = function( plugin, weight ) {
+        weight = parseInt( weight ) || 10;
+        if ( weight <= 0 ) {
+            throw "addPreInitPlugin: weight must be a positive integer";
+        }
+
+        if ( preInitPlugins[ weight ] === undefined ) {
+            preInitPlugins[ weight ] = [];
+        }
+        preInitPlugins[ weight ].push( plugin );
+    };
+
+    // Called at beginning of init, to execute all pre-init plugins.
+    var execPreInitPlugins = function( root ) { //jshint ignore:line
+        for ( var i = 0; i < preInitPlugins.length; i++ ) {
+            var thisLevel = preInitPlugins[ i ];
+            if ( thisLevel !== undefined ) {
+                for ( var j = 0; j < thisLevel.length; j++ ) {
+                    thisLevel[ j ]( root );
+                }
+            }
+        }
+    };
+
+    // `addPreStepLeavePlugin` allows plugins to register a function that should
+    // be run (synchronously) at the beginning of goto()
+    impress.addPreStepLeavePlugin = function( plugin, weight ) { //jshint ignore:line
+        weight = parseInt( weight ) || 10;
+        if ( weight <= 0 ) {
+            throw "addPreStepLeavePlugin: weight must be a positive integer";
+        }
+
+        if ( preStepLeavePlugins[ weight ] === undefined ) {
+            preStepLeavePlugins[ weight ] = [];
+        }
+        preStepLeavePlugins[ weight ].push( plugin );
+    };
+
+    // Called at beginning of goto(), to execute all preStepLeave plugins.
+    var execPreStepLeavePlugins = function( event ) { //jshint ignore:line
+        for ( var i = 0; i < preStepLeavePlugins.length; i++ ) {
+            var thisLevel = preStepLeavePlugins[ i ];
+            if ( thisLevel !== undefined ) {
+                for ( var j = 0; j < thisLevel.length; j++ ) {
+                    if ( thisLevel[ j ]( event ) === false ) {
+
+                        // If a plugin returns false, the stepleave event (and related transition)
+                        // is aborted
+                        return false;
+                    }
+                }
+            }
+        }
+    };
+
 } )( document, window );
 
-// NAVIGATION EVENTS
-
-// As you can see this part is separate from the impress.js core code.
-// It's because these navigation actions only need what impress.js provides with
-// its simple API.
+// THAT'S ALL FOLKS!
 //
-// In future I think about moving it to make them optional, move to separate files
-// and treat more like a 'plugins'.
+// Thanks for reading it all.
+// Or thanks for scrolling down and reading the last part.
+//
+// I've learnt a lot when building impress.js and I hope this code and comments
+// will help somebody learn at least some part of it.
+
+/**
+ * Garbage collection utility
+ *
+ * This library allows plugins to add elements and event listeners they add to the DOM. The user
+ * can call `impress().lib.gc.teardown()` to cause all of them to be removed from DOM, so that
+ * the document is in the state it was before calling `impress().init()`.
+ *
+ * In addition to just adding elements and event listeners to the garbage collector, plugins
+ * can also register callback functions to do arbitrary cleanup upon teardown.
+ *
+ * Henrik Ingo (c) 2016
+ * MIT License
+ */
+
+( function( document, window ) {
+    "use strict";
+    var roots = [];
+    var rootsCount = 0;
+    var startingState = { roots: [] };
+
+    var libraryFactory = function( rootId ) {
+        if ( roots[ rootId ] ) {
+            return roots[ rootId ];
+        }
+
+        // Per root global variables (instance variables?)
+        var elementList = [];
+        var eventListenerList = [];
+        var callbackList = [];
+
+        recordStartingState( rootId );
+
+        // LIBRARY FUNCTIONS
+        // Definitions of the library functions we return as an object at the end
+
+        // `pushElement` adds a DOM element to the gc stack
+        var pushElement = function( element ) {
+            elementList.push( element );
+        };
+
+        // `appendChild` is a convenience wrapper that combines DOM appendChild with gc.pushElement
+        var appendChild = function( parent, element ) {
+            parent.appendChild( element );
+            pushElement( element );
+        };
+
+        // `pushEventListener` adds an event listener to the gc stack
+        var pushEventListener = function( target, type, listenerFunction ) {
+            eventListenerList.push( { target:target, type:type, listener:listenerFunction } );
+        };
+
+        // `addEventListener` combines DOM addEventListener with gc.pushEventListener
+        var addEventListener = function( target, type, listenerFunction ) {
+            target.addEventListener( type, listenerFunction );
+            pushEventListener( target, type, listenerFunction );
+        };
+
+        // `pushCallback` If the above utilities are not enough, plugins can add their own callback
+        // function to do arbitrary things.
+        var pushCallback = function( callback ) {
+            callbackList.push( callback );
+        };
+        pushCallback( function( rootId ) { resetStartingState( rootId ); } );
+
+        // `teardown` will
+        // - execute all callbacks in LIFO order
+        // - call `removeChild` on all DOM elements in LIFO order
+        // - call `removeEventListener` on all event listeners in LIFO order
+        // The goal of a teardown is to return to the same state that the DOM was before
+        // `impress().init()` was called.
+        var teardown = function() {
+
+            // Execute the callbacks in LIFO order
+            var i; // Needed by jshint
+            for ( i = callbackList.length - 1; i >= 0; i-- ) {
+                callbackList[ i ]( rootId );
+            }
+            callbackList = [];
+            for ( i = 0; i < elementList.length; i++ ) {
+                elementList[ i ].parentElement.removeChild( elementList[ i ] );
+            }
+            elementList = [];
+            for ( i = 0; i < eventListenerList.length; i++ ) {
+                var target   = eventListenerList[ i ].target;
+                var type     = eventListenerList[ i ].type;
+                var listener = eventListenerList[ i ].listener;
+                target.removeEventListener( type, listener );
+            }
+        };
+
+        var lib = {
+            pushElement: pushElement,
+            appendChild: appendChild,
+            pushEventListener: pushEventListener,
+            addEventListener: addEventListener,
+            pushCallback: pushCallback,
+            teardown: teardown
+        };
+        roots[ rootId ] = lib;
+        rootsCount++;
+        return lib;
+    };
+
+    // Let impress core know about the existence of this library
+    window.impress.addLibraryFactory( { gc: libraryFactory } );
+
+    // CORE INIT
+    // The library factory (gc(rootId)) is called at the beginning of impress(rootId).init()
+    // For the purposes of teardown(), we can use this as an opportunity to save the state
+    // of a few things in the DOM in their virgin state, before impress().init() did anything.
+    // Note: These could also be recorded by the code in impress.js core as these values
+    // are changed, but in an effort to not deviate too much from upstream, I'm adding
+    // them here rather than the core itself.
+    var recordStartingState = function( rootId ) {
+        startingState.roots[ rootId ] = {};
+        startingState.roots[ rootId ].steps = [];
+
+        // Record whether the steps have an id or not
+        var steps = document.getElementById( rootId ).querySelectorAll( ".step" );
+        for ( var i = 0; i < steps.length; i++ ) {
+            var el = steps[ i ];
+            startingState.roots[ rootId ].steps.push( {
+                el: el,
+                id: el.getAttribute( "id" )
+            } );
+        }
+
+        // In the rare case of multiple roots, the following is changed on first init() and
+        // reset at last tear().
+        if ( rootsCount === 0 ) {
+            startingState.body = {};
+
+            // It is customary for authors to set body.class="impress-not-supported" as a starting
+            // value, which can then be removed by impress().init(). But it is not required.
+            // Remember whether it was there or not.
+            if ( document.body.classList.contains( "impress-not-supported" ) ) {
+                startingState.body.impressNotSupported = true;
+            } else {
+                startingState.body.impressNotSupported = false;
+            }
+
+            // If there's a <meta name="viewport"> element, its contents will be overwritten by init
+            var metas = document.head.querySelectorAll( "meta" );
+            for ( i = 0; i < metas.length; i++ ) {
+                var m = metas[ i ];
+                if ( m.name === "viewport" ) {
+                    startingState.meta = m.content;
+                }
+            }
+        }
+    };
+
+    // CORE TEARDOWN
+    var resetStartingState = function( rootId ) {
+
+        // Reset body element
+        document.body.classList.remove( "impress-enabled" );
+        document.body.classList.remove( "impress-disabled" );
+
+        var root = document.getElementById( rootId );
+        var activeId = root.querySelector( ".active" ).id;
+        document.body.classList.remove( "impress-on-" + activeId );
+
+        document.documentElement.style.height = "";
+        document.body.style.height = "";
+        document.body.style.overflow = "";
+
+        // Remove style values from the root and step elements
+        // Note: We remove the ones set by impress.js core. Otoh, we didn't preserve any original
+        // values. A more sophisticated implementation could keep track of original values and then
+        // reset those.
+        var steps = root.querySelectorAll( ".step" );
+        for ( var i = 0; i < steps.length; i++ ) {
+            steps[ i ].classList.remove( "future" );
+            steps[ i ].classList.remove( "past" );
+            steps[ i ].classList.remove( "present" );
+            steps[ i ].classList.remove( "active" );
+            steps[ i ].style.position = "";
+            steps[ i ].style.transform = "";
+            steps[ i ].style[ "transform-style" ] = "";
+        }
+        root.style.position = "";
+        root.style[ "transform-origin" ] = "";
+        root.style.transition = "";
+        root.style[ "transform-style" ] = "";
+        root.style.top = "";
+        root.style.left = "";
+        root.style.transform = "";
+
+        // Reset id of steps ("step-1" id's are auto generated)
+        steps = startingState.roots[ rootId ].steps;
+        var step;
+        while ( step = steps.pop() ) {
+            if ( step.id === null ) {
+                step.el.removeAttribute( "id" );
+            } else {
+                step.el.setAttribute( "id", step.id );
+            }
+        }
+        delete startingState.roots[ rootId ];
+
+        // Move step div elements away from canvas, then delete canvas
+        // Note: There's an implicit assumption here that the canvas div is the only child element
+        // of the root div. If there would be something else, it's gonna be lost.
+        var canvas = root.firstChild;
+        var canvasHTML = canvas.innerHTML;
+        root.innerHTML = canvasHTML;
+
+        if ( roots[ rootId ] !== undefined ) {
+            delete roots[ rootId ];
+            rootsCount--;
+        }
+        if ( rootsCount === 0 ) {
+
+            // In the rare case that more than one impress root elements were initialized, these
+            // are only reset when all are uninitialized.
+            document.body.classList.remove( "impress-supported" );
+            if ( startingState.body.impressNotSupported ) {
+                document.body.classList.add( "impress-not-supported" );
+            }
+
+            // We need to remove or reset the meta element inserted by impress.js
+            var metas = document.head.querySelectorAll( "meta" );
+            for ( i = 0; i < metas.length; i++ ) {
+                var m = metas[ i ];
+                if ( m.name === "viewport" ) {
+                    if ( startingState.meta !== undefined ) {
+                        m.content = startingState.meta;
+                    } else {
+                        m.parentElement.removeChild( m );
+                    }
+                }
+            }
+        }
+
+    };
+
+} )( document, window );
+
+/**
+ * Common utility functions
+ *
+ * Copyright 2011-2012 Bartek Szopka (@bartaz)
+ * Henrik Ingo (c) 2016
+ * MIT License
+ */
+
+( function( document, window ) {
+    "use strict";
+    var roots = [];
+
+    var libraryFactory = function( rootId ) {
+        if ( roots[ rootId ] ) {
+            return roots[ rootId ];
+        }
+
+        // `$` returns first element for given CSS `selector` in the `context` of
+        // the given element or whole document.
+        var $ = function( selector, context ) {
+            context = context || document;
+            return context.querySelector( selector );
+        };
+
+        // `$$` return an array of elements for given CSS `selector` in the `context` of
+        // the given element or whole document.
+        var $$ = function( selector, context ) {
+            context = context || document;
+            return arrayify( context.querySelectorAll( selector ) );
+        };
+
+        // `arrayify` takes an array-like object and turns it into real Array
+        // to make all the Array.prototype goodness available.
+        var arrayify = function( a ) {
+            return [].slice.call( a );
+        };
+
+        // `byId` returns element with given `id` - you probably have guessed that ;)
+        var byId = function( id ) {
+            return document.getElementById( id );
+        };
+
+        // `getElementFromHash` returns an element located by id from hash part of
+        // window location.
+        var getElementFromHash = function() {
+
+            // Get id from url # by removing `#` or `#/` from the beginning,
+            // so both "fallback" `#slide-id` and "enhanced" `#/slide-id` will work
+            return byId( window.location.hash.replace( /^#\/?/, "" ) );
+        };
+
+        // Throttling function calls, by Remy Sharp
+        // http://remysharp.com/2010/07/21/throttling-function-calls/
+        var throttle = function( fn, delay ) {
+            var timer = null;
+            return function() {
+                var context = this, args = arguments;
+                window.clearTimeout( timer );
+                timer = window.setTimeout( function() {
+                    fn.apply( context, args );
+                }, delay );
+            };
+        };
+
+        // `toNumber` takes a value given as `numeric` parameter and tries to turn
+        // it into a number. If it is not possible it returns 0 (or other value
+        // given as `fallback`).
+        var toNumber = function( numeric, fallback ) {
+            return isNaN( numeric ) ? ( fallback || 0 ) : Number( numeric );
+        };
+
+        // `triggerEvent` builds a custom DOM event with given `eventName` and `detail` data
+        // and triggers it on element given as `el`.
+        var triggerEvent = function( el, eventName, detail ) {
+            var event = document.createEvent( "CustomEvent" );
+            event.initCustomEvent( eventName, true, true, detail );
+            el.dispatchEvent( event );
+        };
+
+        var lib = {
+            $: $,
+            $$: $$,
+            arrayify: arrayify,
+            byId: byId,
+            getElementFromHash: getElementFromHash,
+            throttle: throttle,
+            toNumber: toNumber,
+            triggerEvent: triggerEvent
+        };
+        roots[ rootId ] = lib;
+        return lib;
+    };
+
+    // Let impress core know about the existence of this library
+    window.impress.addLibraryFactory( { util: libraryFactory } );
+
+} )( document, window );
+
+/**
+ * Autoplay plugin - Automatically advance slideshow after N seconds
+ *
+ * Copyright 2016 Henrik Ingo, henrik.ingo@avoinelama.fi
+ * Released under the MIT license.
+ */
+/* global clearTimeout, setTimeout, document */
+
+( function( document ) {
+    "use strict";
+
+    var autoplayDefault = 0;
+    var currentStepTimeout = 0;
+    var api = null;
+    var timeoutHandle = null;
+    var root = null;
+    var util;
+
+    // On impress:init, check whether there is a default setting, as well as
+    // handle step-1.
+    document.addEventListener( "impress:init", function( event ) {
+        util = event.detail.api.lib.util;
+
+        // Getting API from event data instead of global impress().init().
+        // You don't even need to know what is the id of the root element
+        // or anything. `impress:init` event data gives you everything you
+        // need to control the presentation that was just initialized.
+        api = event.detail.api;
+        root = event.target;
+
+        // Element attributes starting with "data-", become available under
+        // element.dataset. In addition hyphenized words become camelCased.
+        var data = root.dataset;
+
+        if ( data.autoplay ) {
+            autoplayDefault = util.toNumber( data.autoplay, 0 );
+        }
+
+        var toolbar = document.querySelector( "#impress-toolbar" );
+        if ( toolbar ) {
+            addToolbarButton( toolbar );
+        }
+
+        api.lib.gc.pushCallback( function() {
+            clearTimeout( timeoutHandle );
+        } );
+
+        // Note that right after impress:init event, also impress:stepenter is
+        // triggered for the first slide, so that's where code flow continues.
+    }, false );
+
+    // If default autoplay time was defined in the presentation root, or
+    // in this step, set timeout.
+    var reloadTimeout = function( event ) {
+        var step = event.target;
+        currentStepTimeout = util.toNumber( step.dataset.autoplay, autoplayDefault );
+        if ( status === "paused" ) {
+            setAutoplayTimeout( 0 );
+        } else {
+            setAutoplayTimeout( currentStepTimeout );
+        }
+    };
+
+    document.addEventListener( "impress:stepenter", function( event ) {
+        reloadTimeout( event );
+    }, false );
+
+    document.addEventListener( "impress:substep:stepleaveaborted", function( event ) {
+        reloadTimeout( event );
+    }, false );
+
+    /**
+     * Set timeout after which we move to next() step.
+     */
+    var setAutoplayTimeout = function( timeout ) {
+        if ( timeoutHandle ) {
+            clearTimeout( timeoutHandle );
+        }
+
+        if ( timeout > 0 ) {
+            timeoutHandle = setTimeout( function() { api.next(); }, timeout * 1000 );
+        }
+        setButtonText();
+    };
+
+    /*** Toolbar plugin integration *******************************************/
+    var status = "not clicked";
+    var toolbarButton = null;
+
+    // Copied from core impress.js. Good candidate for moving to a utilities collection.
+    var triggerEvent = function( el, eventName, detail ) {
+        var event = document.createEvent( "CustomEvent" );
+        event.initCustomEvent( eventName, true, true, detail );
+        el.dispatchEvent( event );
+    };
+
+    var makeDomElement = function( html ) {
+        var tempDiv = document.createElement( "div" );
+        tempDiv.innerHTML = html;
+        return tempDiv.firstChild;
+    };
+
+    var toggleStatus = function() {
+        if ( currentStepTimeout > 0 && status !== "paused" ) {
+            status = "paused";
+        } else {
+            status = "playing";
+        }
+    };
+
+    var getButtonText = function() {
+        if ( currentStepTimeout > 0 && status !== "paused" ) {
+            return "||"; // Pause
+        } else {
+            return "&#9654;"; // Play
+        }
+    };
+
+    var setButtonText = function() {
+        if ( toolbarButton ) {
+
+            // Keep button size the same even if label content is changing
+            var buttonWidth = toolbarButton.offsetWidth;
+            var buttonHeight = toolbarButton.offsetHeight;
+            toolbarButton.innerHTML = getButtonText();
+            if ( !toolbarButton.style.width ) {
+                toolbarButton.style.width = buttonWidth + "px";
+            }
+            if ( !toolbarButton.style.height ) {
+                toolbarButton.style.height = buttonHeight + "px";
+            }
+        }
+    };
+
+    var addToolbarButton = function( toolbar ) {
+        var html = '<button id="impress-autoplay-playpause" ' + // jshint ignore:line
+                   'title="Autoplay" class="impress-autoplay">' + // jshint ignore:line
+                   getButtonText() + "</button>"; // jshint ignore:line
+        toolbarButton = makeDomElement( html );
+        toolbarButton.addEventListener( "click", function() {
+            toggleStatus();
+            if ( status === "playing" ) {
+                if ( autoplayDefault === 0 ) {
+                    autoplayDefault = 7;
+                }
+                if ( currentStepTimeout === 0 ) {
+                    currentStepTimeout = autoplayDefault;
+                }
+                setAutoplayTimeout( currentStepTimeout );
+            } else if ( status === "paused" ) {
+                setAutoplayTimeout( 0 );
+            }
+        } );
+
+        triggerEvent( toolbar, "impress:toolbar:appendChild",
+                      { group: 10, element: toolbarButton } );
+    };
+
+} )( document );
+
+/**
+ * Blackout plugin
+ *
+ * Press Ctrl+b to hide all slides, and Ctrl+b again to show them.
+ * Also navigating to a different slide will show them again (impress:stepleave).
+ *
+ * Copyright 2014 @Strikeskids
+ * Released under the MIT license.
+ */
+/* global document */
+
+( function( document ) {
+    "use strict";
+
+    var canvas = null;
+    var blackedOut = false;
+
+    // While waiting for a shared library of utilities, copying these 2 from main impress.js
+    var css = function( el, props ) {
+        var key, pkey;
+        for ( key in props ) {
+            if ( props.hasOwnProperty( key ) ) {
+                pkey = pfx( key );
+                if ( pkey !== null ) {
+                    el.style[ pkey ] = props[ key ];
+                }
+            }
+        }
+        return el;
+    };
+
+    var pfx = ( function() {
+
+        var style = document.createElement( "dummy" ).style,
+            prefixes = "Webkit Moz O ms Khtml".split( " " ),
+            memory = {};
+
+        return function( prop ) {
+            if ( typeof memory[ prop ] === "undefined" ) {
+
+                var ucProp  = prop.charAt( 0 ).toUpperCase() + prop.substr( 1 ),
+                    props   = ( prop + " " + prefixes.join( ucProp + " " ) + ucProp ).split( " " );
+
+                memory[ prop ] = null;
+                for ( var i in props ) {
+                    if ( style[ props[ i ] ] !== undefined ) {
+                        memory[ prop ] = props[ i ];
+                        break;
+                    }
+                }
+
+            }
+
+            return memory[ prop ];
+        };
+
+    } )();
+
+    var removeBlackout = function() {
+        if ( blackedOut ) {
+            css( canvas, {
+                display: "block"
+            } );
+            blackedOut = false;
+        }
+    };
+
+    var blackout = function() {
+        if ( blackedOut ) {
+            removeBlackout();
+        } else {
+            css( canvas, {
+                display: ( blackedOut = !blackedOut ) ? "none" : "block"
+            } );
+            blackedOut = true;
+        }
+    };
+
+    // Wait for impress.js to be initialized
+    document.addEventListener( "impress:init", function( event ) {
+        var api = event.detail.api;
+        var root = event.target;
+        canvas = root.firstElementChild;
+        var gc = api.lib.gc;
+
+        gc.addEventListener( document, "keydown", function( event ) {
+            if ( event.ctrlKey && event.keyCode === 66 ) {
+                event.preventDefault();
+                if ( !blackedOut ) {
+                    blackout();
+                } else {
+
+                    // Note: This doesn't work on Firefox. It will set display:block,
+                    // but slides only become visible again upon next transition, which
+                    // forces some kind of redraw. Works as intended on Chrome.
+                    removeBlackout();
+                }
+            }
+        }, false );
+
+        gc.addEventListener( document, "keyup", function( event ) {
+            if ( event.ctrlKey && event.keyCode === 66 ) {
+                event.preventDefault();
+            }
+        }, false );
+
+    }, false );
+
+    document.addEventListener( "impress:stepleave", function() {
+        removeBlackout();
+    }, false );
+
+} )( document );
+
+
+/**
+ * Extras Plugin
+ *
+ * This plugin performs initialization (like calling mermaid.initialize())
+ * for the extras/ plugins if they are loaded into a presentation.
+ *
+ * See README.md for details.
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+/* global markdown, hljs, mermaid, impress, document, window */
+
 ( function( document, window ) {
     "use strict";
 
-    // Throttling function calls, by Remy Sharp
-    // http://remysharp.com/2010/07/21/throttling-function-calls/
-    var throttle = function( fn, delay ) {
-        var timer = null;
-        return function() {
-            var context = this, args = arguments;
-            clearTimeout( timer );
-            timer = setTimeout( function() {
-                fn.apply( context, args );
-            }, delay );
-        };
+    var preInit = function() {
+        if ( window.markdown ) {
+
+            // Unlike the other extras, Markdown.js doesn't by default do anything in
+            // particular. We do it ourselves here.
+            // In addition, we use "-----" as a delimiter for new slide.
+
+            // Query all .markdown elements and translate to HTML
+            var markdownDivs = document.querySelectorAll( ".markdown" );
+            for ( var idx = 0; idx < markdownDivs.length; idx++ ) {
+              var element = markdownDivs[ idx ];
+
+              var slides = element.textContent.split( /^-----$/m );
+              var i = slides.length - 1;
+              element.innerHTML = markdown.toHTML( slides[ i ] );
+
+              // If there's an id, unset it for last, and all other, elements,
+              // and then set it for the first.
+              var id = null;
+              if ( element.id ) {
+                id = element.id;
+                element.id = "";
+              }
+              i--;
+              while ( i >= 0 ) {
+                var newElement = element.cloneNode( false );
+                newElement.innerHTML = markdown.toHTML( slides[ i ] );
+                element.parentNode.insertBefore( newElement, element );
+                element = newElement;
+                i--;
+              }
+              if ( id !== null ) {
+                element.id = id;
+              }
+            }
+        } // Markdown
+
+        if ( window.hljs ) {
+            hljs.initHighlightingOnLoad();
+        }
+
+        if ( window.mermaid ) {
+            mermaid.initialize( { startOnLoad:true } );
+        }
     };
+
+    // Register the plugin to be called in pre-init phase
+    // Note: Markdown.js should run early/first, because it creates new div elements.
+    // So add this with a lower-than-default weight.
+    impress.addPreInitPlugin( preInit, 1 );
+
+} )( document, window );
+
+
+/**
+ * Form support
+ *
+ * Functionality to better support use of input, textarea, button... elements in a presentation.
+ *
+ * Currently this does only one single thing: On impress:stepleave, de-focus any potentially active
+ * element. This is to prevent the focus from being left in a form element that is no longer visible
+ * in the window, and user therefore typing garbage into the form.
+ *
+ * TODO: Currently it is not possible to use TAB to navigate between form elements. Impress.js, and
+ * in particular the navigation plugin, unfortunately must fully take control of the tab key,
+ * otherwise a user could cause the browser to scroll to a link or button that's not on the current
+ * step. However, it could be possible to allow tab navigation between form elements, as long as
+ * they are on the active step. This is a topic for further study.
+ *
+ * Copyright 2016 Henrik Ingo
+ * MIT License
+ */
+/* global document */
+( function( document ) {
+    "use strict";
+
+    document.addEventListener( "impress:stepleave", function() {
+        document.activeElement.blur();
+    }, false );
+
+} )( document );
+
+
+/**
+ * Goto Plugin
+ *
+ * The goto plugin is a pre-stepleave plugin. It is executed before impress:stepleave,
+ * and will alter the destination where to transition next.
+ *
+ * Example:
+ *
+ *         <!-- When leaving this step, go directly to "step-5" -->
+ *         <div class="step" data-goto="step-5">
+ *
+ *         <!-- When leaving this step with next(), go directly to "step-5", instead of next step.
+ *              If moving backwards to previous step - e.g. prev() instead of next() -
+ *              then go to "step-1". -->
+ *         <div class="step" data-goto-next="step-5" data-goto-prev="step-1">
+ *
+ *        <!-- data-goto-key-list and data-goto-next-list allow you to build advanced non-linear
+ *             navigation. -->
+ *        <div class="step"
+ *             data-goto-key-list="ArrowUp ArrowDown ArrowRight ArrowLeft"
+ *             data-goto-next-list="step-4 step-3 step-2 step-5">
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values for a table
+ * of what strings to use for each key.
+ *
+ * Copyright 2016-2017 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+/* global window, document, impress */
+
+( function( document, window ) {
+    "use strict";
+    var lib;
+
+    document.addEventListener( "impress:init", function( event ) {
+        lib = event.detail.api.lib;
+    }, false );
+
+    var isNumber = function( numeric ) {
+        return !isNaN( numeric );
+    };
+
+    var goto = function( event ) {
+        if ( ( !event ) || ( !event.target ) ) {
+            return;
+        }
+
+        var data = event.target.dataset;
+        var steps = document.querySelectorAll( ".step" );
+
+        // Data-goto-key-list="" & data-goto-next-list="" //////////////////////////////////////////
+        if ( data.gotoKeyList !== undefined &&
+             data.gotoNextList !== undefined &&
+             event.origEvent !== undefined &&
+             event.origEvent.key !== undefined ) {
+            var keylist = data.gotoKeyList.split( " " );
+            var nextlist = data.gotoNextList.split( " " );
+
+            if ( keylist.length !== nextlist.length ) {
+                window.console.log(
+                    "impress goto plugin: data-goto-key-list and data-goto-next-list don't match:"
+                );
+                window.console.log( keylist );
+                window.console.log( nextlist );
+
+                // Don't return, allow the other categories to work despite this error
+            } else {
+                var index = keylist.indexOf( event.origEvent.key );
+                if ( index >= 0 ) {
+                    var next = nextlist[ index ];
+                    if ( isNumber( next ) ) {
+                        event.detail.next = steps[ next ];
+
+                        // If the new next element has its own transitionDuration, we're responsible
+                        // for setting that on the event as well
+                        event.detail.transitionDuration = lib.util.toNumber(
+                            event.detail.next.dataset.transitionDuration,
+                            event.detail.transitionDuration
+                        );
+                        return;
+                    } else {
+                        var newTarget = document.getElementById( next );
+                        if ( newTarget && newTarget.classList.contains( "step" ) ) {
+                            event.detail.next = newTarget;
+                            event.detail.transitionDuration = lib.util.toNumber(
+                                event.detail.next.dataset.transitionDuration,
+                                event.detail.transitionDuration
+                            );
+                            return;
+                        } else {
+                            window.console.log( "impress goto plugin: " + next +
+                                                " is not a step in this impress presentation." );
+                        }
+                    }
+                }
+            }
+        }
+
+        // Data-goto-next="" & data-goto-prev="" ///////////////////////////////////////////////////
+
+        // Handle event.target data-goto-next attribute
+        if ( isNumber( data.gotoNext ) && event.detail.reason === "next" ) {
+            event.detail.next = steps[ data.gotoNext ];
+
+            // If the new next element has its own transitionDuration, we're responsible for setting
+            // that on the event as well
+            event.detail.transitionDuration = lib.util.toNumber(
+                event.detail.next.dataset.transitionDuration, event.detail.transitionDuration
+            );
+            return;
+        }
+        if ( data.gotoNext && event.detail.reason === "next" ) {
+            var newTarget = document.getElementById( data.gotoNext ); // jshint ignore:line
+            if ( newTarget && newTarget.classList.contains( "step" ) ) {
+                event.detail.next = newTarget;
+                event.detail.transitionDuration = lib.util.toNumber(
+                    event.detail.next.dataset.transitionDuration,
+                    event.detail.transitionDuration
+                );
+                return;
+            } else {
+                window.console.log( "impress goto plugin: " + data.gotoNext +
+                                    " is not a step in this impress presentation." );
+            }
+        }
+
+        // Handle event.target data-goto-prev attribute
+        if ( isNumber( data.gotoPrev ) && event.detail.reason === "prev" ) {
+            event.detail.next = steps[ data.gotoPrev ];
+            event.detail.transitionDuration = lib.util.toNumber(
+                event.detail.next.dataset.transitionDuration, event.detail.transitionDuration
+            );
+            return;
+        }
+        if ( data.gotoPrev && event.detail.reason === "prev" ) {
+            var newTarget = document.getElementById( data.gotoPrev ); // jshint ignore:line
+            if ( newTarget && newTarget.classList.contains( "step" ) ) {
+                event.detail.next = newTarget;
+                event.detail.transitionDuration = lib.util.toNumber(
+                    event.detail.next.dataset.transitionDuration, event.detail.transitionDuration
+                );
+                return;
+            } else {
+                window.console.log( "impress goto plugin: " + data.gotoPrev +
+                                    " is not a step in this impress presentation." );
+            }
+        }
+
+        // Data-goto="" ///////////////////////////////////////////////////////////////////////////
+
+        // Handle event.target data-goto attribute
+        if ( isNumber( data.goto ) ) {
+            event.detail.next = steps[ data.goto ];
+            event.detail.transitionDuration = lib.util.toNumber(
+                event.detail.next.dataset.transitionDuration, event.detail.transitionDuration
+            );
+            return;
+        }
+        if ( data.goto ) {
+            var newTarget = document.getElementById( data.goto ); // jshint ignore:line
+            if ( newTarget && newTarget.classList.contains( "step" ) ) {
+                event.detail.next = newTarget;
+                event.detail.transitionDuration = lib.util.toNumber(
+                    event.detail.next.dataset.transitionDuration, event.detail.transitionDuration
+                );
+                return;
+            } else {
+                window.console.log( "impress goto plugin: " + data.goto +
+                                    " is not a step in this impress presentation." );
+            }
+        }
+    };
+
+    // Register the plugin to be called in pre-stepleave phase
+    impress.addPreStepLeavePlugin( goto );
+
+} )( document, window );
+
+
+/**
+ * Help popup plugin
+ *
+ * Example:
+ *
+ *     <!-- Show a help popup at start, or if user presses "H" -->
+ *     <div id="impress-help"></div>
+ *
+ * For developers:
+ *
+ * Typical use for this plugin, is for plugins that support some keypress, to add a line
+ * to the help popup produced by this plugin. For example "P: Presenter console".
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+/* global window, document */
+
+( function( document, window ) {
+    "use strict";
+    var rows = [];
+    var timeoutHandle;
+
+    var triggerEvent = function( el, eventName, detail ) {
+        var event = document.createEvent( "CustomEvent" );
+        event.initCustomEvent( eventName, true, true, detail );
+        el.dispatchEvent( event );
+    };
+
+    var renderHelpDiv = function() {
+        var helpDiv = document.getElementById( "impress-help" );
+        if ( helpDiv ) {
+            var html = [];
+            for ( var row in rows ) {
+                for ( var arrayItem in row ) {
+                    html.push( rows[ row ][ arrayItem ] );
+                }
+            }
+            if ( html ) {
+                helpDiv.innerHTML = "<table>\n" + html.join( "\n" ) + "</table>\n";
+            }
+        }
+    };
+
+    var toggleHelp = function() {
+        var helpDiv = document.getElementById( "impress-help" );
+        if ( !helpDiv ) {
+            return;
+        }
+
+        if ( helpDiv.style.display === "block" ) {
+            helpDiv.style.display = "none";
+        } else {
+            helpDiv.style.display = "block";
+            window.clearTimeout( timeoutHandle );
+        }
+    };
+
+    document.addEventListener( "keyup", function( event ) {
+
+        // Check that event target is html or body element.
+        if ( event.target.nodeName === "BODY" || event.target.nodeName === "HTML" ) {
+            if ( event.keyCode === 72 ) { // "h"
+                event.preventDefault();
+                toggleHelp();
+            }
+        }
+    }, false );
+
+    // API
+    // Other plugins can add help texts, typically if they support an action on a keypress.
+    /**
+     * Add a help text to the help popup.
+     *
+     * :param: e.detail.command  Example: "H"
+     * :param: e.detail.text     Example: "Show this help."
+     * :param: e.detail.row      Row index from 0 to 9 where to place this help text. Example: 0
+     */
+    document.addEventListener( "impress:help:add", function( e ) {
+
+        // The idea is for the sender of the event to supply a unique row index, used for sorting.
+        // But just in case two plugins would ever use the same row index, we wrap each row into
+        // its own array. If there are more than one entry for the same index, they are shown in
+        // first come, first serve ordering.
+        var rowIndex = e.detail.row;
+        if ( typeof rows[ rowIndex ] !== "object" || !rows[ rowIndex ].isArray ) {
+            rows[ rowIndex ] = [];
+        }
+        rows[ e.detail.row ].push( "<tr><td><strong>" + e.detail.command + "</strong></td><td>" +
+                                   e.detail.text + "</td></tr>" );
+        renderHelpDiv();
+    } );
+
+    document.addEventListener( "impress:init", function( e ) {
+        renderHelpDiv();
+
+        // At start, show the help for 7 seconds.
+        var helpDiv = document.getElementById( "impress-help" );
+        if ( helpDiv ) {
+            helpDiv.style.display = "block";
+            timeoutHandle = window.setTimeout( function() {
+                var helpDiv = document.getElementById( "impress-help" );
+                helpDiv.style.display = "none";
+            }, 7000 );
+
+            // Regster callback to empty the help div on teardown
+            var api = e.detail.api;
+            api.lib.gc.pushCallback( function() {
+                window.clearTimeout( timeoutHandle );
+                helpDiv.style.display = "";
+                helpDiv.innerHTML = "";
+                rows = [];
+            } );
+        }
+
+        // Use our own API to register the help text for "h"
+        triggerEvent( document, "impress:help:add",
+                      { command: "H", text: "Show this help", row: 0 } );
+    } );
+
+} )( document, window );
+
+
+/**
+ * Adds a presenter console to impress.js
+ *
+ * MIT Licensed, see license.txt.
+ *
+ * Copyright 2012, 2013, 2015 impress-console contributors (see README.txt)
+ *
+ * version: 1.3-dev
+ *
+ */
+
+// This file contains so much HTML, that we will just respectfully disagree about js
+/* jshint quotmark:single */
+/* global navigator, top, setInterval, clearInterval, document, window */
+
+( function( document, window ) {
+    'use strict';
+
+    // TODO: Move this to src/lib/util.js
+    var triggerEvent = function( el, eventName, detail ) {
+        var event = document.createEvent( 'CustomEvent' );
+        event.initCustomEvent( eventName, true, true, detail );
+        el.dispatchEvent( event );
+    };
+
+    // Create Language object depending on browsers language setting
+    var lang;
+    switch ( navigator.language ) {
+    case 'de':
+        lang = {
+            'noNotes': '<div class="noNotes">Keine Notizen hierzu</div>',
+            'restart': 'Neustart',
+            'clickToOpen': 'Klicken um Sprecherkonsole zu öffnen',
+            'prev': 'zurück',
+            'next': 'weiter',
+            'loading': 'initalisiere',
+            'ready': 'Bereit',
+            'moving': 'in Bewegung',
+            'useAMPM': false
+        };
+        break;
+    case 'en': // jshint ignore:line
+    default : // jshint ignore:line
+        lang = {
+            'noNotes': '<div class="noNotes">No notes for this step</div>',
+            'restart': 'Restart',
+            'clickToOpen': 'Click to open speaker console',
+            'prev': 'Prev',
+            'next': 'Next',
+            'loading': 'Loading',
+            'ready': 'Ready',
+            'moving': 'Moving',
+            'useAMPM': false
+        };
+        break;
+    }
+
+    // Settings to set iframe in speaker console
+    const preViewDefaultFactor = 0.7;
+    const preViewMinimumFactor = 0.5;
+    const preViewGap    = 4;
+
+    // This is the default template for the speaker console window
+    const consoleTemplate = '<!DOCTYPE html>' +
+        '<html id="impressconsole"><head>' +
+
+          // Order is important: If user provides a cssFile, those will win, because they're later
+          '{{cssStyle}}' +
+          '{{cssLink}}' +
+        '</head><body>' +
+        '<div id="console">' +
+          '<div id="views">' +
+            '<iframe id="slideView" scrolling="no"></iframe>' +
+            '<iframe id="preView" scrolling="no"></iframe>' +
+            '<div id="blocker"></div>' +
+          '</div>' +
+          '<div id="notes"></div>' +
+        '</div>' +
+        '<div id="controls"> ' +
+          '<div id="prev"><a  href="#" onclick="impress().prev(); return false;" />' +
+            '{{prev}}</a></div>' +
+          '<div id="next"><a  href="#" onclick="impress().next(); return false;" />' +
+            '{{next}}</a></div>' +
+          '<div id="clock">--:--</div>' +
+          '<div id="timer" onclick="timerReset()">00m 00s</div>' +
+          '<div id="status">{{loading}}</div>' +
+        '</div>' +
+        '</body></html>';
+
+    // Default css location
+    var cssFileOldDefault = 'css/impressConsole.css';
+    var cssFile = undefined; // jshint ignore:line
+
+    // Css for styling iframs on the console
+    var cssFileIframeOldDefault = 'css/iframe.css';
+    var cssFileIframe = undefined; // jshint ignore:line
+
+    // All console windows, so that you can call impressConsole() repeatedly.
+    var allConsoles = {};
+
+    // Zero padding helper function:
+    var zeroPad = function( i ) {
+        return ( i < 10 ? '0' : '' ) + i;
+    };
+
+    // The console object
+    var impressConsole = window.impressConsole = function( rootId ) {
+
+        rootId = rootId || 'impress';
+
+        if ( allConsoles[ rootId ] ) {
+            return allConsoles[ rootId ];
+        }
+
+        // Root presentation elements
+        var root = document.getElementById( rootId );
+
+        var consoleWindow = null;
+
+        var nextStep = function() {
+            var classes = '';
+            var nextElement = document.querySelector( '.active' );
+
+            // Return to parents as long as there is no next sibling
+            while ( !nextElement.nextElementSibling && nextElement.parentNode ) {
+                nextElement = nextElement.parentNode;
+            }
+            nextElement = nextElement.nextElementSibling;
+            while ( nextElement ) {
+                classes = nextElement.attributes[ 'class' ];
+                if ( classes && classes.value.indexOf( 'step' ) !== -1 ) {
+                    consoleWindow.document.getElementById( 'blocker' ).innerHTML = lang.next;
+                    return nextElement;
+                }
+
+                if ( nextElement.firstElementChild ) { // First go into deep
+                    nextElement = nextElement.firstElementChild;
+                } else {
+
+                    // Go to next sibling or through parents until there is a next sibling
+                    while ( !nextElement.nextElementSibling && nextElement.parentNode ) {
+                        nextElement = nextElement.parentNode;
+                    }
+                    nextElement = nextElement.nextElementSibling;
+                }
+            }
+
+            // No next element. Pick the first
+            consoleWindow.document.getElementById( 'blocker' ).innerHTML = lang.restart;
+            return document.querySelector( '.step' );
+        };
+
+        // Sync the notes to the step
+        var onStepLeave = function() {
+            if ( consoleWindow ) {
+
+                // Set notes to next steps notes.
+                var newNotes = document.querySelector( '.active' ).querySelector( '.notes' );
+                if ( newNotes ) {
+                    newNotes = newNotes.innerHTML;
+                } else {
+                    newNotes = lang.noNotes;
+                }
+                consoleWindow.document.getElementById( 'notes' ).innerHTML = newNotes;
+
+                // Set the views
+                var baseURL = document.URL.substring( 0, document.URL.search( '#/' ) );
+                var slideSrc = baseURL + '#' + document.querySelector( '.active' ).id;
+                var preSrc = baseURL + '#' + nextStep().id;
+                var slideView = consoleWindow.document.getElementById( 'slideView' );
+
+                // Setting them when they are already set causes glithes in Firefox, so check first:
+                if ( slideView.src !== slideSrc ) {
+                    slideView.src = slideSrc;
+                }
+                var preView = consoleWindow.document.getElementById( 'preView' );
+                if ( preView.src !== preSrc ) {
+                    preView.src = preSrc;
+                }
+
+                consoleWindow.document.getElementById( 'status' ).innerHTML =
+                    '<span class="moving">' + lang.moving + '</span>';
+            }
+        };
+
+        // Sync the previews to the step
+        var onStepEnter = function() {
+            if ( consoleWindow ) {
+
+                // We do everything here again, because if you stopped the previos step to
+                // early, the onstepleave trigger is not called for that step, so
+                // we need this to sync things.
+                var newNotes = document.querySelector( '.active' ).querySelector( '.notes' );
+                if ( newNotes ) {
+                    newNotes = newNotes.innerHTML;
+                } else {
+                    newNotes = lang.noNotes;
+                }
+                var notes = consoleWindow.document.getElementById( 'notes' );
+                notes.innerHTML = newNotes;
+                notes.scrollTop = 0;
+
+                // Set the views
+                var baseURL = document.URL.substring( 0, document.URL.search( '#/' ) );
+                var slideSrc = baseURL + '#' + document.querySelector( '.active' ).id;
+                var preSrc = baseURL + '#' + nextStep().id;
+                var slideView = consoleWindow.document.getElementById( 'slideView' );
+
+                // Setting them when they are already set causes glithes in Firefox, so check first:
+                if ( slideView.src !== slideSrc ) {
+                    slideView.src = slideSrc;
+                }
+                var preView = consoleWindow.document.getElementById( 'preView' );
+                if ( preView.src !== preSrc ) {
+                    preView.src = preSrc;
+                }
+
+                consoleWindow.document.getElementById( 'status' ).innerHTML =
+                    '<span  class="ready">' + lang.ready + '</span>';
+            }
+        };
+
+        // Sync substeps
+        var onSubstep = function( event ) {
+            if ( consoleWindow ) {
+                if ( event.detail.reason === 'next' ) {
+                    onSubstepShow();
+                }
+                if ( event.detail.reason === 'prev' ) {
+                    onSubstepHide();
+                }
+            }
+        };
+
+        var onSubstepShow = function() {
+            var slideView = consoleWindow.document.getElementById( 'slideView' );
+            triggerEventInView( slideView, 'impress:substep:show' );
+        };
+
+        var onSubstepHide = function() {
+            var slideView = consoleWindow.document.getElementById( 'slideView' );
+            triggerEventInView( slideView, 'impress:substep:hide' );
+        };
+
+        var triggerEventInView = function( frame, eventName, detail ) {
+
+            // Note: Unfortunately Chrome does not allow createEvent on file:// URLs, so this won't
+            // work. This does work on Firefox, and should work if viewing the presentation on a
+            // http:// URL on Chrome.
+            var event = frame.contentDocument.createEvent( 'CustomEvent' );
+            event.initCustomEvent( eventName, true, true, detail );
+            frame.contentDocument.dispatchEvent( event );
+        };
+
+        var spaceHandler = function() {
+            var notes = consoleWindow.document.getElementById( 'notes' );
+            if ( notes.scrollTopMax - notes.scrollTop > 20 ) {
+               notes.scrollTop = notes.scrollTop + notes.clientHeight * 0.8;
+            } else {
+               window.impress().next();
+            }
+        };
+
+        var timerReset = function() {
+            consoleWindow.timerStart = new Date();
+        };
+
+        // Show a clock
+        var clockTick = function() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var ampm = '';
+
+            if ( lang.useAMPM ) {
+                ampm = ( hours < 12 ) ? 'AM' : 'PM';
+                hours = ( hours > 12 ) ? hours - 12 : hours;
+                hours = ( hours === 0 ) ? 12 : hours;
+            }
+
+            // Clock
+            var clockStr = zeroPad( hours ) + ':' + zeroPad( minutes ) + ':' + zeroPad( seconds ) +
+                           ' ' + ampm;
+            consoleWindow.document.getElementById( 'clock' ).firstChild.nodeValue = clockStr;
+
+            // Timer
+            seconds = Math.floor( ( now - consoleWindow.timerStart ) / 1000 );
+            minutes = Math.floor( seconds / 60 );
+            seconds = Math.floor( seconds % 60 );
+            consoleWindow.document.getElementById( 'timer' ).firstChild.nodeValue =
+                zeroPad( minutes ) + 'm ' + zeroPad( seconds ) + 's';
+
+            if ( !consoleWindow.initialized ) {
+
+                // Nudge the slide windows after load, or they will scrolled wrong on Firefox.
+                consoleWindow.document.getElementById( 'slideView' ).contentWindow.scrollTo( 0, 0 );
+                consoleWindow.document.getElementById( 'preView' ).contentWindow.scrollTo( 0, 0 );
+                consoleWindow.initialized = true;
+            }
+        };
+
+        var registerKeyEvent = function( keyCodes, handler, window ) {
+            if ( window === undefined ) {
+                window = consoleWindow;
+            }
+
+            // Prevent default keydown action when one of supported key is pressed
+            window.document.addEventListener( 'keydown', function( event ) {
+                if ( !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey &&
+                     keyCodes.indexOf( event.keyCode ) !== -1 ) {
+                    event.preventDefault();
+                }
+            }, false );
+
+            // Trigger impress action on keyup
+            window.document.addEventListener( 'keyup', function( event ) {
+                if ( !event.ctrlKey && !event.altKey && !event.shiftKey && !event.metaKey &&
+                     keyCodes.indexOf( event.keyCode ) !== -1 ) {
+                        handler();
+                        event.preventDefault();
+                }
+            }, false );
+        };
+
+        var consoleOnLoad = function() {
+                var slideView = consoleWindow.document.getElementById( 'slideView' );
+                var preView = consoleWindow.document.getElementById( 'preView' );
+
+                // Firefox:
+                slideView.contentDocument.body.classList.add( 'impress-console' );
+                preView.contentDocument.body.classList.add( 'impress-console' );
+                if ( cssFileIframe !== undefined ) {
+                    slideView.contentDocument.head.insertAdjacentHTML(
+                        'beforeend',
+                        '<link rel="stylesheet" type="text/css" href="' + cssFileIframe + '">'
+                    );
+                    preView.contentDocument.head.insertAdjacentHTML(
+                        'beforeend',
+                        '<link rel="stylesheet" type="text/css" href="' + cssFileIframe + '">'
+                    );
+                }
+
+                // Chrome:
+                slideView.addEventListener( 'load', function() {
+                        slideView.contentDocument.body.classList.add( 'impress-console' );
+                        if ( cssFileIframe !== undefined ) {
+                            slideView.contentDocument.head.insertAdjacentHTML(
+                                'beforeend',
+                                '<link rel="stylesheet" type="text/css" href="' +
+                                    cssFileIframe + '">'
+                            );
+                        }
+                } );
+                preView.addEventListener( 'load', function() {
+                        preView.contentDocument.body.classList.add( 'impress-console' );
+                        if ( cssFileIframe !== undefined ) {
+                            preView.contentDocument.head.insertAdjacentHTML(
+                                'beforeend',
+                                '<link rel="stylesheet" type="text/css" href="' +
+                                    cssFileIframe + '">' );
+                        }
+                } );
+        };
+
+        var open = function() {
+            if ( top.isconsoleWindow ) {
+                return;
+            }
+
+            if ( consoleWindow && !consoleWindow.closed ) {
+                consoleWindow.focus();
+            } else {
+                consoleWindow = window.open( '', 'impressConsole' );
+
+                // If opening failes this may be because the browser prevents this from
+                // not (or less) interactive JavaScript...
+                if ( consoleWindow == null ) {
+
+                    // ... so I add a button to klick.
+                    // workaround on firefox
+                    var message = document.createElement( 'div' );
+                    message.id = 'consoleWindowError';
+                    message.style.position = 'fixed';
+                    message.style.left = 0;
+                    message.style.top = 0;
+                    message.style.right = 0;
+                    message.style.bottom = 0;
+                    message.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                    var onClickStr = 'var x = document.getElementById(\'consoleWindowError\');' +
+                                     'x.parentNode.removeChild(x);impressConsole().open();';
+                    message.innerHTML = '<button style="margin: 25vh 25vw;width:50vw;height:50vh;' +
+                                                 'onclick="' + onClickStr + '">' +
+                                        lang.clickToOpen +
+                                        '</button>';
+                    document.body.appendChild( message );
+                    return;
+                }
+
+                var cssLink = '';
+                if ( cssFile !== undefined ) {
+                    cssLink = '<link rel="stylesheet" type="text/css" media="screen" href="' +
+                              cssFile + '">';
+                }
+
+                // This sets the window location to the main window location, so css can be loaded:
+                consoleWindow.document.open();
+
+                // Write the template:
+                consoleWindow.document.write(
+
+                    // CssStyleStr is lots of inline <style></style> defined at the end of this file
+                    consoleTemplate.replace( '{{cssStyle}}', cssStyleStr() )
+                                   .replace( '{{cssLink}}', cssLink )
+                                   .replace( /{{.*?}}/gi, function( x ) {
+                                       return lang[ x.substring( 2, x.length - 2 ) ]; }
+                                   )
+                );
+                consoleWindow.document.title = 'Speaker Console (' + document.title + ')';
+                consoleWindow.impress = window.impress;
+
+                // We set this flag so we can detect it later, to prevent infinite popups.
+                consoleWindow.isconsoleWindow = true;
+
+                // Set the onload function:
+                consoleWindow.onload = consoleOnLoad;
+
+                // Add clock tick
+                consoleWindow.timerStart = new Date();
+                consoleWindow.timerReset = timerReset;
+                consoleWindow.clockInterval = setInterval( allConsoles[ rootId ].clockTick, 1000 );
+
+                // Keyboard navigation handlers
+                // 33: pg up, 37: left, 38: up
+                registerKeyEvent( [ 33, 37, 38 ], window.impress().prev );
+
+                // 34: pg down, 39: right, 40: down
+                registerKeyEvent( [ 34, 39, 40 ], window.impress().next );
+
+                // 32: space
+                registerKeyEvent( [ 32 ], spaceHandler );
+
+                // 82: R
+                registerKeyEvent( [ 82 ], timerReset );
+
+                // Cleanup
+                consoleWindow.onbeforeunload = function() {
+
+                    // I don't know why onunload doesn't work here.
+                    clearInterval( consoleWindow.clockInterval );
+                };
+
+                // It will need a little nudge on Firefox, but only after loading:
+                onStepEnter();
+                consoleWindow.initialized = false;
+                consoleWindow.document.close();
+
+                //Catch any window resize to pass size on
+                window.onresize = resize;
+                consoleWindow.onresize = resize;
+
+                return consoleWindow;
+            }
+        };
+
+        var resize = function() {
+            var slideView = consoleWindow.document.getElementById( 'slideView' );
+            var preView = consoleWindow.document.getElementById( 'preView' );
+
+            // Get ratio of presentation
+            var ratio = window.innerHeight / window.innerWidth;
+
+            // Get size available for views
+            var views = consoleWindow.document.getElementById( 'views' );
+
+            // SlideView may have a border or some padding:
+            // asuming same border width on both direktions
+            var delta = slideView.offsetWidth - slideView.clientWidth;
+
+            // Set views
+            var slideViewWidth = ( views.clientWidth - delta );
+            var slideViewHeight = Math.floor( slideViewWidth * ratio );
+
+            var preViewTop = slideViewHeight + preViewGap;
+
+            var preViewWidth = Math.floor( slideViewWidth * preViewDefaultFactor );
+            var preViewHeight = Math.floor( slideViewHeight * preViewDefaultFactor );
+
+            // Shrink preview to fit into space available
+            if ( views.clientHeight - delta < preViewTop + preViewHeight ) {
+                preViewHeight = views.clientHeight - delta - preViewTop;
+                preViewWidth = Math.floor( preViewHeight / ratio );
+            }
+
+            // If preview is not high enough forget ratios!
+            if ( preViewWidth <= Math.floor( slideViewWidth * preViewMinimumFactor ) ) {
+                slideViewWidth = ( views.clientWidth - delta );
+                slideViewHeight = Math.floor( ( views.clientHeight - delta - preViewGap ) /
+                                             ( 1 + preViewMinimumFactor ) );
+
+                preViewTop = slideViewHeight + preViewGap;
+
+                preViewWidth = Math.floor( slideViewWidth * preViewMinimumFactor );
+                preViewHeight = views.clientHeight - delta - preViewTop;
+            }
+
+            // Set the calculated into styles
+            slideView.style.width = slideViewWidth + 'px';
+            slideView.style.height = slideViewHeight + 'px';
+
+            preView.style.top = preViewTop + 'px';
+
+            preView.style.width = preViewWidth + 'px';
+            preView.style.height = preViewHeight + 'px';
+        };
+
+        var _init = function( cssConsole, cssIframe ) {
+            if ( cssConsole !== undefined ) {
+                cssFile = cssConsole;
+            }
+
+            // You can also specify the css in the presentation root div:
+            // <div id="impress" data-console-css=..." data-console-css-iframe="...">
+            else if ( root.dataset.consoleCss !== undefined ) {
+                cssFile = root.dataset.consoleCss;
+            }
+
+            if ( cssIframe !== undefined ) {
+                cssFileIframe = cssIframe;
+            } else if ( root.dataset.consoleCssIframe !== undefined ) {
+                cssFileIframe = root.dataset.consoleCssIframe;
+            }
+
+            // Register the event
+            root.addEventListener( 'impress:stepleave', onStepLeave );
+            root.addEventListener( 'impress:stepenter', onStepEnter );
+            root.addEventListener( 'impress:substep:stepleaveaborted', onSubstep );
+            root.addEventListener( 'impress:substep:show', onSubstepShow );
+            root.addEventListener( 'impress:substep:hide', onSubstepHide );
+
+            //When the window closes, clean up after ourselves.
+            window.onunload = function() {
+                if ( consoleWindow && !consoleWindow.closed ) {
+                    consoleWindow.close();
+                }
+            };
+
+            //Open speaker console when they press 'p'
+            registerKeyEvent( [ 80 ], open, window );
+
+            //Btw, you can also launch console automatically:
+            //<div id="impress" data-console-autolaunch="true">
+            if ( root.dataset.consoleAutolaunch === 'true' ) {
+                window.open();
+            }
+        };
+
+        var init = function( cssConsole, cssIframe ) {
+            if ( ( cssConsole === undefined || cssConsole === cssFileOldDefault ) &&
+                 ( cssIframe === undefined  || cssIframe === cssFileIframeOldDefault ) ) {
+                window.console.log( 'impressConsole.init() is deprecated. ' +
+                                   'impressConsole is now initialized automatically when you ' +
+                                   'call impress().init().' );
+            }
+            _init( cssConsole, cssIframe );
+        };
+
+        document.addEventListener( 'impress:init', function() {
+            _init();
+
+            // Add 'P' to the help popup
+            triggerEvent( document, 'impress:help:add',
+                         { command: 'P', text: 'Presenter console', row: 10 } );
+        } );
+
+        // New API for impress.js plugins is based on using events
+        root.addEventListener( 'impress:console:open', function() {
+            window.open();
+        } );
+
+        /**
+         * Register a key code to an event handler
+         *
+         * :param: event.detail.keyCodes    List of key codes
+         * :param: event.detail.handler     A function registered as the event handler
+         * :param: event.detail.window      The console window to register the keycode in
+         */
+        root.addEventListener( 'impress:console:registerKeyEvent', function( event ) {
+            registerKeyEvent( event.detail.keyCodes, event.detail.handler, event.detail.window );
+        } );
+
+        // Return the object
+        allConsoles[ rootId ] = { init: init, open: open, clockTick: clockTick,
+                               registerKeyEvent: registerKeyEvent };
+        return allConsoles[ rootId ];
+
+    };
+
+    // Returns a string to be used inline as a css <style> element in the console window.
+    // Apologies for length, but hiding it here at the end to keep it away from rest of the code.
+    var cssStyleStr = function() {
+        return `<style>
+            #impressconsole body {
+                background-color: rgb(255, 255, 255);
+                padding: 0;
+                margin: 0;
+                font-family: verdana, arial, sans-serif;
+                font-size: 2vw;
+            }
+
+            #impressconsole div#console {
+                position: absolute;
+                top: 0.5vw;
+                left: 0.5vw;
+                right: 0.5vw;
+                bottom: 3vw;
+                margin: 0;
+            }
+
+            #impressconsole div#views, #impressconsole div#notes {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+            }
+
+            #impressconsole div#views {
+                left: 0;
+                right: 50vw;
+                overflow: hidden;
+            }
+
+            #impressconsole div#blocker {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+            }
+
+            #impressconsole div#notes {
+                left: 50vw;
+                right: 0;
+                overflow-x: hidden;
+                overflow-y: auto;
+                padding: 0.3ex;
+                background-color: rgb(255, 255, 255);
+                border: solid 1px rgb(120, 120, 120);
+            }
+
+            #impressconsole div#notes .noNotes {
+                color: rgb(200, 200, 200);
+            }
+
+            #impressconsole div#notes p {
+                margin-top: 0;
+            }
+
+            #impressconsole iframe {
+                position: absolute;
+                margin: 0;
+                padding: 0;
+                left: 0;
+                border: solid 1px rgb(120, 120, 120);
+            }
+
+            #impressconsole iframe#slideView {
+                top: 0;
+                width: 49vw;
+                height: 49vh;
+            }
+
+            #impressconsole iframe#preView {
+                opacity: 0.7;
+                top: 50vh;
+                width: 30vw;
+                height: 30vh;
+            }
+
+            #impressconsole div#controls {
+                margin: 0;
+                position: absolute;
+                bottom: 0.25vw;
+                left: 0.5vw;
+                right: 0.5vw;
+                height: 2.5vw;
+                background-color: rgb(255, 255, 255);
+                background-color: rgba(255, 255, 255, 0.6);
+            }
+
+            #impressconsole div#prev, div#next {
+            }
+
+            #impressconsole div#prev a, #impressconsole div#next a {
+                display: block;
+                border: solid 1px rgb(70, 70, 70);
+                border-radius: 0.5vw;
+                font-size: 1.5vw;
+                padding: 0.25vw;
+                text-decoration: none;
+                background-color: rgb(220, 220, 220);
+                color: rgb(0, 0, 0);
+            }
+
+            #impressconsole div#prev a:hover, #impressconsole div#next a:hover {
+                background-color: rgb(245, 245, 245);
+            }
+
+            #impressconsole div#prev {
+                float: left;
+            }
+
+            #impressconsole div#next {
+                float: right;
+            }
+
+            #impressconsole div#status {
+                margin-left: 2em;
+                margin-right: 2em;
+                text-align: center;
+                float: right;
+            }
+
+            #impressconsole div#clock {
+                margin-left: 2em;
+                margin-right: 2em;
+                text-align: center;
+                float: left;
+            }
+
+            #impressconsole div#timer {
+                margin-left: 2em;
+                margin-right: 2em;
+                text-align: center;
+                float: left;
+            }
+
+            #impressconsole span.moving {
+                color: rgb(255, 0, 0);
+            }
+
+            #impressconsole span.ready {
+                color: rgb(0, 128, 0);
+            }
+        </style>`;
+    };
+
+    impressConsole();
+
+} )( document, window );
+
+/**
+ * Mobile devices support
+ *
+ * Allow presentation creators to hide all but 3 slides, to save resources, particularly on mobile
+ * devices, using classes body.impress-mobile, .step.prev, .step.active and .step.next.
+ *
+ * Note: This plugin does not take into account possible redirections done with skip, goto etc
+ * plugins. Basically it wouldn't work as intended in such cases, but the active step will at least
+ * be correct.
+ *
+ * Adapted to a plugin from a submission by @Kzeni:
+ * https://github.com/impress/impress.js/issues/333
+ */
+/* global document, navigator */
+( function( document ) {
+    "use strict";
+
+    var getNextStep = function( el ) {
+        var steps = document.querySelectorAll( ".step" );
+        for ( var i = 0; i < steps.length; i++ ) {
+            if ( steps[ i ] === el ) {
+                if ( i + 1 < steps.length ) {
+                    return steps[ i + 1 ];
+                } else {
+                    return steps[ 0 ];
+                }
+            }
+        }
+    };
+    var getPrevStep = function( el ) {
+        var steps = document.querySelectorAll( ".step" );
+        for ( var i = steps.length - 1; i >= 0; i-- ) {
+            if ( steps[ i ] === el ) {
+                if ( i - 1 >= 0 ) {
+                    return steps[ i - 1 ];
+                } else {
+                    return steps[ steps.length - 1 ];
+                }
+            }
+        }
+    };
+
+    // Detect mobile browsers & add CSS class as appropriate.
+    document.addEventListener( "impress:init", function( event ) {
+        var body = document.body;
+        if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                 navigator.userAgent
+             ) ) {
+            body.classList.add( "impress-mobile" );
+        }
+
+        // Unset all this on teardown
+        var api = event.detail.api;
+        api.lib.gc.pushCallback( function() {
+            document.body.classList.remove( "impress-mobile" );
+            var prev = document.getElementsByClassName( "prev" )[ 0 ];
+            var next = document.getElementsByClassName( "next" )[ 0 ];
+            if ( typeof prev !== "undefined" ) {
+                prev.classList.remove( "prev" );
+            }
+            if ( typeof next !== "undefined" ) {
+                next.classList.remove( "next" );
+            }
+        } );
+    } );
+
+    // Add prev and next classes to the siblings of the newly entered active step element
+    // Remove prev and next classes from their current step elements
+    // Note: As an exception we break namespacing rules, as these are useful general purpose
+    // classes. (Naming rules would require us to use css classes mobile-next and mobile-prev,
+    // based on plugin name.)
+    document.addEventListener( "impress:stepenter", function( event ) {
+	      var oldprev = document.getElementsByClassName( "prev" )[ 0 ];
+	      var oldnext = document.getElementsByClassName( "next" )[ 0 ];
+
+	      var prev = getPrevStep( event.target );
+	      prev.classList.add( "prev" );
+	      var next = getNextStep( event.target );
+	      next.classList.add( "next" );
+
+	      if ( typeof oldprev !== "undefined" ) {
+		      oldprev.classList.remove( "prev" );
+              }
+	      if ( typeof oldnext !== "undefined" ) {
+		      oldnext.classList.remove( "next" );
+              }
+    } );
+} )( document );
+
+
+/**
+ * Mouse timeout plugin
+ *
+ * After 3 seconds of mouse inactivity, add the css class
+ * `body.impress-mouse-timeout`. On `mousemove`, `click` or `touch`, remove the
+ * class.
+ *
+ * The use case for this plugin is to use CSS to hide elements from the screen
+ * and only make them visible when the mouse is moved. Examples where this
+ * might be used are: the toolbar from the toolbar plugin, and the mouse cursor
+ * itself.
+ *
+ * Example CSS:
+ *
+ *     body.impress-mouse-timeout {
+ *         cursor: none;
+ *     }
+ *     body.impress-mouse-timeout div#impress-toolbar {
+ *         display: none;
+ *     }
+ *
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+/* global window, document */
+( function( document, window ) {
+    "use strict";
+    var timeout = 3;
+    var timeoutHandle;
+
+    var hide = function() {
+
+        // Mouse is now inactive
+        document.body.classList.add( "impress-mouse-timeout" );
+    };
+
+    var show = function() {
+        if ( timeoutHandle ) {
+            window.clearTimeout( timeoutHandle );
+        }
+
+        // Mouse is now active
+        document.body.classList.remove( "impress-mouse-timeout" );
+
+        // Then set new timeout after which it is considered inactive again
+        timeoutHandle = window.setTimeout( hide, timeout * 1000 );
+    };
+
+    document.addEventListener( "impress:init", function( event ) {
+        var api = event.detail.api;
+        var gc = api.lib.gc;
+        gc.addEventListener( document, "mousemove", show );
+        gc.addEventListener( document, "click", show );
+        gc.addEventListener( document, "touch", show );
+
+        // Set first timeout
+        show();
+
+        // Unset all this on teardown
+        gc.pushCallback( function() {
+            window.clearTimeout( timeoutHandle );
+            document.body.classList.remove( "impress-mouse-timeout" );
+        } );
+    }, false );
+
+} )( document, window );
+
+/**
+ * Navigation events plugin
+ *
+ * As you can see this part is separate from the impress.js core code.
+ * It's because these navigation actions only need what impress.js provides with
+ * its simple API.
+ *
+ * This plugin is what we call an _init plugin_. It's a simple kind of
+ * impress.js plugin. When loaded, it starts listening to the `impress:init`
+ * event. That event listener initializes the plugin functionality - in this
+ * case we listen to some keypress and mouse events. The only dependencies on
+ * core impress.js functionality is the `impress:init` method, as well as using
+ * the public api `next(), prev(),` etc when keys are pressed.
+ *
+ * Copyright 2011-2012 Bartek Szopka (@bartaz)
+ * Released under the MIT license.
+ * ------------------------------------------------
+ *  author:  Bartek Szopka
+ *  version: 0.5.3
+ *  url:     http://bartaz.github.com/impress.js/
+ *  source:  http://github.com/bartaz/impress.js/
+ *
+ */
+/* global document */
+( function( document ) {
+    "use strict";
 
     // Wait for impress.js to be initialized
     document.addEventListener( "impress:init", function( event ) {
@@ -19705,19 +22341,8 @@ module.exports = camelize;
         // or anything. `impress:init` event data gives you everything you
         // need to control the presentation that was just initialized.
         var api = event.detail.api;
-
-        // KEYBOARD NAVIGATION HANDLERS
-
-        // Prevent default keydown action when one of supported key is pressed.
-        document.addEventListener( "keydown", function( event ) {
-            if ( event.keyCode === 9 ||
-               ( event.keyCode >= 32 && event.keyCode <= 34 ) ||
-               ( event.keyCode >= 37 && event.keyCode <= 40 ) ) {
-                event.preventDefault();
-            }
-        }, false );
-
-        // Trigger impress action (next or prev) on keyup.
+        var gc = api.lib.gc;
+        var util = api.lib.util;
 
         // Supported keys are:
         // [space] - quite common in presentation software to move forward
@@ -19732,39 +22357,80 @@ module.exports = camelize;
         //   positioning. I didn't want to just prevent this default action, so I used [tab]
         //   as another way to moving to next step... And yes, I know that for the sake of
         //   consistency I should add [shift+tab] as opposite action...
-        document.addEventListener( "keyup", function( event ) {
+        var isNavigationEvent = function( event ) {
 
-            if ( event.shiftKey || event.altKey || event.ctrlKey || event.metaKey ) {
-                return;
+            // Don't trigger navigation for example when user returns to browser window with ALT+TAB
+            if ( event.altKey || event.ctrlKey || event.metaKey ) {
+                return false;
             }
 
-            if ( event.keyCode === 9 ||
-               ( event.keyCode >= 32 && event.keyCode <= 34 ) ||
-               ( event.keyCode >= 37 && event.keyCode <= 40 ) ) {
-                switch ( event.keyCode ) {
-                    case 33: // Page up
-                    case 37: // Left
-                    case 38: // Up
-                             api.prev();
-                             break;
-                    case 9:  // Tab
-                    case 32: // Space
-                    case 34: // Page down
-                    case 39: // Right
-                    case 40: // Down
-                             api.next();
-                             break;
-                }
+            // In the case of TAB, we force step navigation always, overriding the browser
+            // navigation between input elements, buttons and links.
+            if ( event.keyCode === 9 ) {
+                return true;
+            }
 
+            // With the sole exception of TAB, we also ignore keys pressed if shift is down.
+            if ( event.shiftKey ) {
+                return false;
+            }
+
+            // For arrows, etc, check that event target is html or body element. This is to allow
+            // presentations to have, for example, forms with input elements where user can type
+            // text, including space, and not move to next step.
+            if ( event.target.nodeName !== "BODY" && event.target.nodeName !== "HTML" ) {
+                return false;
+            }
+
+            if ( ( event.keyCode >= 32 && event.keyCode <= 34 ) ||
+                 ( event.keyCode >= 37 && event.keyCode <= 40 ) ) {
+                return true;
+            }
+        };
+
+        // KEYBOARD NAVIGATION HANDLERS
+
+        // Prevent default keydown action when one of supported key is pressed.
+        gc.addEventListener( document, "keydown", function( event ) {
+            if ( isNavigationEvent( event ) ) {
+                event.preventDefault();
+            }
+        }, false );
+
+        // Trigger impress action (next or prev) on keyup.
+        gc.addEventListener( document, "keyup", function( event ) {
+            if ( isNavigationEvent( event ) ) {
+                if ( event.shiftKey ) {
+                    switch ( event.keyCode ) {
+                        case 9: // Shift+tab
+                            api.prev();
+                            break;
+                    }
+                } else {
+                    switch ( event.keyCode ) {
+                        case 33: // Pg up
+                        case 37: // Left
+                        case 38: // Up
+                                 api.prev( event );
+                                 break;
+                        case 9:  // Tab
+                        case 32: // Space
+                        case 34: // Pg down
+                        case 39: // Right
+                        case 40: // Down
+                                 api.next( event );
+                                 break;
+                    }
+                }
                 event.preventDefault();
             }
         }, false );
 
         // Delegated handler for clicking on the links to presentation steps
-        document.addEventListener( "click", function( event ) {
+        gc.addEventListener( document, "click", function( event ) {
 
             // Event delegation with "bubbling"
-            // Check if event target (or any of its parents is a link)
+            // check if event target (or any of its parents is a link)
             var target = event.target;
             while ( ( target.tagName !== "A" ) &&
                     ( target !== document.documentElement ) ) {
@@ -19787,13 +22453,13 @@ module.exports = camelize;
         }, false );
 
         // Delegated handler for clicking on step elements
-        document.addEventListener( "click", function( event ) {
+        gc.addEventListener( document, "click", function( event ) {
             var target = event.target;
 
             // Find closest step element that is not active
             while ( !( target.classList.contains( "step" ) &&
-                      !target.classList.contains( "active" ) ) &&
-                      ( target !== document.documentElement ) ) {
+                       !target.classList.contains( "active" ) ) &&
+                    ( target !== document.documentElement ) ) {
                 target = target.parentNode;
             }
 
@@ -19802,54 +22468,877 @@ module.exports = camelize;
             }
         }, false );
 
-        // Touch handler to detect taps on the left and right side of the screen
-        // based on awesome work of @hakimel: https://github.com/hakimel/reveal.js
-        document.addEventListener( "touchstart", function( event ) {
-            if ( event.touches.length === 1 ) {
-                var x = event.touches[ 0 ].clientX,
-                    width = window.innerWidth * 0.3,
-                    result = null;
+        // Add a line to the help popup
+        util.triggerEvent( document, "impress:help:add", { command: "Left &amp; Right",
+                                                           text: "Previous &amp; Next step",
+                                                           row: 1 } );
 
-                if ( x < width ) {
-                    result = api.prev();
-                } else if ( x > window.innerWidth - width ) {
-                    result = api.next();
+    }, false );
+
+} )( document );
+
+
+/**
+ * Navigation UI plugin
+ *
+ * This plugin provides UI elements "back", "forward" and a list to select
+ * a specific slide number.
+ *
+ * The navigation controls are added to the toolbar plugin via DOM events. User must enable the
+ * toolbar in a presentation to have them visible.
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+
+// This file contains so much HTML, that we will just respectfully disagree about js
+/* jshint quotmark:single */
+/* global document */
+
+( function( document ) {
+    'use strict';
+    var toolbar;
+    var api;
+    var root;
+    var steps;
+    var hideSteps = [];
+    var prev;
+    var select;
+    var next;
+
+    var triggerEvent = function( el, eventName, detail ) {
+        var event = document.createEvent( 'CustomEvent' );
+        event.initCustomEvent( eventName, true, true, detail );
+        el.dispatchEvent( event );
+    };
+
+    var makeDomElement = function( html ) {
+        var tempDiv = document.createElement( 'div' );
+        tempDiv.innerHTML = html;
+        return tempDiv.firstChild;
+    };
+
+    var selectOptionsHtml = function() {
+        var options = '';
+        for ( var i = 0; i < steps.length; i++ ) {
+
+            // Omit steps that are listed as hidden from select widget
+            if ( hideSteps.indexOf( steps[ i ] ) < 0 ) {
+                options = options + '<option value="' + steps[ i ].id + '">' + // jshint ignore:line
+                                    steps[ i ].id + '</option>' + '\n'; // jshint ignore:line
+            }
+        }
+        return options;
+    };
+
+    var addNavigationControls = function( event ) {
+        api = event.detail.api;
+        var gc = api.lib.gc;
+        root = event.target;
+        steps = root.querySelectorAll( '.step' );
+
+        var prevHtml   = '<button id="impress-navigation-ui-prev" title="Previous" ' +
+                         'class="impress-navigation-ui">&lt;</button>';
+        var selectHtml = '<select id="impress-navigation-ui-select" title="Go to" ' +
+                         'class="impress-navigation-ui">' + '\n' +
+                           selectOptionsHtml() +
+                           '</select>';
+        var nextHtml   = '<button id="impress-navigation-ui-next" title="Next" ' +
+                         'class="impress-navigation-ui">&gt;</button>';
+
+        prev = makeDomElement( prevHtml );
+        prev.addEventListener( 'click',
+            function() {
+                api.prev();
+        } );
+        select = makeDomElement( selectHtml );
+        select.addEventListener( 'change',
+            function( event ) {
+                api.goto( event.target.value );
+        } );
+        gc.addEventListener( root, 'impress:steprefresh', function( event ) {
+
+            // As impress.js core now allows to dynamically edit the steps, including adding,
+            // removing, and reordering steps, we need to requery and redraw the select list on
+            // every stepenter event.
+            steps = root.querySelectorAll( '.step' );
+            select.innerHTML = '\n' + selectOptionsHtml();
+
+            // Make sure the list always shows the step we're actually on, even if it wasn't
+            // selected from the list
+            select.value = event.target.id;
+        } );
+        next = makeDomElement( nextHtml );
+        next.addEventListener( 'click',
+            function() {
+                api.next();
+        } );
+
+        triggerEvent( toolbar, 'impress:toolbar:appendChild', { group: 0, element: prev } );
+        triggerEvent( toolbar, 'impress:toolbar:appendChild', { group: 0, element: select } );
+        triggerEvent( toolbar, 'impress:toolbar:appendChild', { group: 0, element: next } );
+
+    };
+
+    // API for not listing given step in the select widget.
+    // For example, if you set class="skip" on some element, you may not want it to show up in the
+    // list either. Otoh we cannot assume that, or anything else, so steps that user wants omitted
+    // must be specifically added with this API call.
+    document.addEventListener( 'impress:navigation-ui:hideStep', function( event ) {
+        hideSteps.push( event.target );
+        if ( select ) {
+            select.innerHTML = selectOptionsHtml();
+        }
+    }, false );
+
+    // Wait for impress.js to be initialized
+    document.addEventListener( 'impress:init', function( event ) {
+        toolbar = document.querySelector( '#impress-toolbar' );
+        if ( toolbar ) {
+            addNavigationControls( event );
+        }
+    }, false );
+
+} )( document );
+
+
+/* global document */
+( function( document ) {
+    "use strict";
+    var root;
+    var stepids = [];
+
+    // Get stepids from the steps under impress root
+    var getSteps = function() {
+        stepids = [];
+        var steps = root.querySelectorAll( ".step" );
+        for ( var i = 0; i < steps.length; i++ )
+        {
+          stepids[ i + 1 ] = steps[ i ].id;
+        }
+        };
+
+    // Wait for impress.js to be initialized
+    document.addEventListener( "impress:init", function( event ) {
+            root = event.target;
+        getSteps();
+        var gc = event.detail.api.lib.gc;
+        gc.pushCallback( function() {
+            stepids = [];
+            if ( progressbar ) {
+                progressbar.style.width = "";
+                        }
+            if ( progress ) {
+                progress.innerHTML = "";
+                        }
+        } );
+    } );
+
+    var progressbar = document.querySelector( "div.impress-progressbar div" );
+    var progress = document.querySelector( "div.impress-progress" );
+
+    if ( null !== progressbar || null !== progress ) {
+        document.addEventListener( "impress:stepleave", function( event ) {
+            updateProgressbar( event.detail.next.id );
+        } );
+
+        document.addEventListener( "impress:steprefresh", function( event ) {
+            getSteps();
+            updateProgressbar( event.target.id );
+        } );
+
+    }
+
+    function updateProgressbar( slideId ) {
+        var slideNumber = stepids.indexOf( slideId );
+        if ( null !== progressbar ) {
+                        var width = 100 / ( stepids.length - 1 ) * ( slideNumber );
+            progressbar.style.width = width.toFixed( 2 ) + "%";
+        }
+        if ( null !== progress ) {
+            progress.innerHTML = slideNumber + "/" + ( stepids.length - 1 );
+        }
+    }
+} )( document );
+
+/**
+ * Relative Positioning Plugin
+ *
+ * This plugin provides support for defining the coordinates of a step relative
+ * to the previous step. This is often more convenient when creating presentations,
+ * since as you add, remove or move steps, you may not need to edit the positions
+ * as much as is the case with the absolute coordinates supported by impress.js
+ * core.
+ *
+ * Example:
+ *
+ *         <!-- Position step 1000 px to the right and 500 px up from the previous step. -->
+ *         <div class="step" data-rel-x="1000" data-rel-y="500">
+ *
+ * Following html attributes are supported for step elements:
+ *
+ *     data-rel-x
+ *     data-rel-y
+ *     data-rel-z
+ *
+ * These values are also inherited from the previous step. This makes it easy to
+ * create a boring presentation where each slide shifts for example 1000px down
+ * from the previous.
+ *
+ * In addition to plain numbers, which are pixel values, it is also possible to
+ * define relative positions as a multiple of screen height and width, using
+ * a unit of "h" and "w", respectively, appended to the number.
+ *
+ * Example:
+ *
+ *        <div class="step" data-rel-x="1.5w" data-rel-y="1.5h">
+ *
+ * This plugin is a *pre-init plugin*. It is called synchronously from impress.js
+ * core at the beginning of `impress().init()`. This allows it to process its own
+ * data attributes first, and possibly alter the data-x, data-y and data-z attributes
+ * that will then be processed by `impress().init()`.
+ *
+ * (Another name for this kind of plugin might be called a *filter plugin*, but
+ * *pre-init plugin* is more generic, as a plugin might do whatever it wants in
+ * the pre-init stage.)
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+
+/* global document, window */
+
+( function( document, window ) {
+    "use strict";
+
+    var startingState = {};
+
+    /**
+     * Copied from core impress.js. We currently lack a library mechanism to
+     * to share utility functions like this.
+     */
+    var toNumber = function( numeric, fallback ) {
+        return isNaN( numeric ) ? ( fallback || 0 ) : Number( numeric );
+    };
+
+    /**
+     * Extends toNumber() to correctly compute also relative-to-screen-size values 5w and 5h.
+     *
+     * Returns the computed value in pixels with w/h postfix removed.
+     */
+    var toNumberAdvanced = function( numeric, fallback ) {
+        if ( typeof numeric !== "string" ) {
+            return toNumber( numeric, fallback );
+        }
+        var ratio = numeric.match( /^([+-]*[\d\.]+)([wh])$/ );
+        if ( ratio == null ) {
+            return toNumber( numeric, fallback );
+        } else {
+            var value = parseFloat( ratio[ 1 ] );
+            var multiplier = ratio[ 2 ] === "w" ? window.innerWidth : window.innerHeight;
+            return value * multiplier;
+        }
+    };
+
+    var computeRelativePositions = function( el, prev ) {
+        var data = el.dataset;
+
+        if ( !prev ) {
+
+            // For the first step, inherit these defaults
+            prev = { x:0, y:0, z:0, relative: { x:0, y:0, z:0 } };
+        }
+
+        var step = {
+                x: toNumber( data.x, prev.x ),
+                y: toNumber( data.y, prev.y ),
+                z: toNumber( data.z, prev.z ),
+                relative: {
+                    x: toNumberAdvanced( data.relX, prev.relative.x ),
+                    y: toNumberAdvanced( data.relY, prev.relative.y ),
+                    z: toNumberAdvanced( data.relZ, prev.relative.z )
                 }
+            };
 
-                if ( result ) {
-                    event.preventDefault();
+        // Relative position is ignored/zero if absolute is given.
+        // Note that this also has the effect of resetting any inherited relative values.
+        if ( data.x !== undefined ) {
+            step.relative.x = 0;
+        }
+        if ( data.y !== undefined ) {
+            step.relative.y = 0;
+        }
+        if ( data.z !== undefined ) {
+            step.relative.z = 0;
+        }
+
+        // Apply relative position to absolute position, if non-zero
+        // Note that at this point, the relative values contain a number value of pixels.
+        step.x = step.x + step.relative.x;
+        step.y = step.y + step.relative.y;
+        step.z = step.z + step.relative.z;
+
+        return step;
+    };
+
+    var rel = function( root ) {
+        var steps = root.querySelectorAll( ".step" );
+        var prev;
+        startingState[ root.id ] = [];
+        for ( var i = 0; i < steps.length; i++ ) {
+            var el = steps[ i ];
+            startingState[ root.id ].push( {
+                el: el,
+                x: el.getAttribute( "data-x" ),
+                y: el.getAttribute( "data-y" ),
+                z: el.getAttribute( "data-z" )
+            } );
+            var step = computeRelativePositions( el, prev );
+
+            // Apply relative position (if non-zero)
+            el.setAttribute( "data-x", step.x );
+            el.setAttribute( "data-y", step.y );
+            el.setAttribute( "data-z", step.z );
+            prev = step;
+        }
+    };
+
+    // Register the plugin to be called in pre-init phase
+    window.impress.addPreInitPlugin( rel );
+
+    // Register teardown callback to reset the data.x, .y, .z values.
+    document.addEventListener( "impress:init", function( event ) {
+        var root = event.target;
+        event.detail.api.lib.gc.pushCallback( function() {
+            var steps = startingState[ root.id ];
+            var step;
+            while ( step = steps.pop() ) {
+                if ( step.x === null ) {
+                    step.el.removeAttribute( "data-x" );
+                } else {
+                    step.el.setAttribute( "data-x", step.x );
+                }
+                if ( step.y === null ) {
+                    step.el.removeAttribute( "data-y" );
+                } else {
+                    step.el.setAttribute( "data-y", step.y );
+                }
+                if ( step.z === null ) {
+                    step.el.removeAttribute( "data-z" );
+                } else {
+                    step.el.setAttribute( "data-z", step.z );
                 }
             }
-        }, false );
+            delete startingState[ root.id ];
+        } );
+    }, false );
+} )( document, window );
+
+
+/**
+ * Resize plugin
+ *
+ * Rescale the presentation after a window resize.
+ *
+ * Copyright 2011-2012 Bartek Szopka (@bartaz)
+ * Released under the MIT license.
+ * ------------------------------------------------
+ *  author:  Bartek Szopka
+ *  version: 0.5.3
+ *  url:     http://bartaz.github.com/impress.js/
+ *  source:  http://github.com/bartaz/impress.js/
+ *
+ */
+
+/* global document, window */
+
+( function( document, window ) {
+    "use strict";
+
+    // Wait for impress.js to be initialized
+    document.addEventListener( "impress:init", function( event ) {
+        var api = event.detail.api;
 
         // Rescale presentation when window is resized
-        window.addEventListener( "resize", throttle( function() {
+        api.lib.gc.addEventListener( window, "resize", api.lib.util.throttle( function() {
 
             // Force going to active step again, to trigger rescaling
             api.goto( document.querySelector( ".step.active" ), 500 );
         }, 250 ), false );
-
     }, false );
 
 } )( document, window );
 
-// THAT'S ALL FOLKS!
-//
-// Thanks for reading it all.
-// Or thanks for scrolling down and reading the last part.
-//
-// I've learnt a lot when building impress.js and I hope this code and comments
-// will help somebody learn at least some part of it.
+
+/**
+ * Skip Plugin
+ *
+ * Example:
+ *
+ *    <!-- This slide is disabled in presentations, when moving with next()
+ *         and prev() commands, but you can still move directly to it, for
+ *         example with a url (anything using goto()). -->
+ *         <div class="step skip">
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+
+/* global document, window */
+
+( function( document, window ) {
+    "use strict";
+    var util;
+
+    document.addEventListener( "impress:init", function( event ) {
+        util = event.detail.api.lib.util;
+    }, false );
+
+    var getNextStep = function( el ) {
+        var steps = document.querySelectorAll( ".step" );
+        for ( var i = 0; i < steps.length; i++ ) {
+            if ( steps[ i ] === el ) {
+                if ( i + 1 < steps.length ) {
+                    return steps[ i + 1 ];
+                } else {
+                    return steps[ 0 ];
+                }
+            }
+        }
+    };
+    var getPrevStep = function( el ) {
+        var steps = document.querySelectorAll( ".step" );
+        for ( var i = steps.length - 1; i >= 0; i-- ) {
+            if ( steps[ i ] === el ) {
+                if ( i - 1 >= 0 ) {
+                    return steps[ i - 1 ];
+                } else {
+                    return steps[ steps.length - 1 ];
+                }
+            }
+        }
+    };
+
+    var skip = function( event ) {
+        if ( ( !event ) || ( !event.target ) ) {
+            return;
+        }
+
+        if ( event.detail.next.classList.contains( "skip" ) ) {
+            if ( event.detail.reason === "next" ) {
+
+                // Go to the next next step instead
+                event.detail.next = getNextStep( event.detail.next );
+
+                // Recursively call this plugin again, until there's a step not to skip
+                skip( event );
+            } else if ( event.detail.reason === "prev" ) {
+
+                // Go to the previous previous step instead
+                event.detail.next = getPrevStep( event.detail.next );
+                skip( event );
+            }
+
+            // If the new next element has its own transitionDuration, we're responsible for setting
+            // that on the event as well
+            event.detail.transitionDuration = util.toNumber(
+                event.detail.next.dataset.transitionDuration, event.detail.transitionDuration
+            );
+        }
+    };
+
+    // Register the plugin to be called in pre-stepleave phase
+    // The weight makes this plugin run early. This is a good thing, because this plugin calls
+    // itself recursively.
+    window.impress.addPreStepLeavePlugin( skip, 1 );
+
+} )( document, window );
+
+
+/**
+ * Stop Plugin
+ *
+ * Example:
+ *
+ *        <!-- Stop at this slide.
+ *             (For example, when used on the last slide, this prevents the
+ *             presentation from wrapping back to the beginning.) -->
+ *        <div class="step stop">
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+/* global document, window */
+( function( document, window ) {
+    "use strict";
+
+    var stop = function( event ) {
+        if ( ( !event ) || ( !event.target ) ) {
+            return;
+        }
+
+        if ( event.target.classList.contains( "stop" ) ) {
+            if ( event.detail.reason === "next" ) {
+                return false;
+            }
+        }
+    };
+
+    // Register the plugin to be called in pre-stepleave phase
+    // The weight makes this plugin run fairly early.
+    window.impress.addPreStepLeavePlugin( stop, 2 );
+
+} )( document, window );
+
+
+/**
+ * Substep Plugin
+ *
+ * Copyright 2017 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+
+/* global document, window */
+
+( function( document, window ) {
+    "use strict";
+
+    // Copied from core impress.js. Good candidate for moving to src/lib/util.js.
+    var triggerEvent = function( el, eventName, detail ) {
+        var event = document.createEvent( "CustomEvent" );
+        event.initCustomEvent( eventName, true, true, detail );
+        el.dispatchEvent( event );
+    };
+
+    var activeStep = null;
+    document.addEventListener( "impress:stepenter", function( event ) {
+        activeStep = event.target;
+    }, false );
+
+    var substep = function( event ) {
+        if ( ( !event ) || ( !event.target ) ) {
+            return;
+        }
+
+        var step = event.target;
+        var el; // Needed by jshint
+        if ( event.detail.reason === "next" ) {
+            el = showSubstepIfAny( step );
+            if ( el ) {
+
+                // Send a message to others, that we aborted a stepleave event.
+                // Autoplay will reload itself from this, as there won't be a stepenter event now.
+                triggerEvent( step, "impress:substep:stepleaveaborted",
+                              { reason: "next", substep: el } );
+
+                // Returning false aborts the stepleave event
+                return false;
+            }
+        }
+        if ( event.detail.reason === "prev" ) {
+            el = hideSubstepIfAny( step );
+            if ( el ) {
+                triggerEvent( step, "impress:substep:stepleaveaborted",
+                              { reason: "prev", substep: el } );
+                return false;
+            }
+        }
+    };
+
+    var showSubstepIfAny = function( step ) {
+        var substeps = step.querySelectorAll( ".substep" );
+        var visible = step.querySelectorAll( ".substep-visible" );
+        if ( substeps.length > 0 ) {
+            return showSubstep( substeps, visible );
+        }
+    };
+
+    var showSubstep = function( substeps, visible ) {
+        if ( visible.length < substeps.length ) {
+            var el = substeps[ visible.length ];
+            el.classList.add( "substep-visible" );
+            return el;
+        }
+    };
+
+    var hideSubstepIfAny = function( step ) {
+        var substeps = step.querySelectorAll( ".substep" );
+        var visible = step.querySelectorAll( ".substep-visible" );
+        if ( substeps.length > 0 ) {
+            return hideSubstep( visible );
+        }
+    };
+
+    var hideSubstep = function( visible ) {
+        if ( visible.length > 0 ) {
+            var el = visible[ visible.length - 1 ];
+            el.classList.remove( "substep-visible" );
+            return el;
+        }
+    };
+
+    // Register the plugin to be called in pre-stepleave phase.
+    // The weight makes this plugin run before other preStepLeave plugins.
+    window.impress.addPreStepLeavePlugin( substep, 1 );
+
+    // When entering a step, in particular when re-entering, make sure that all substeps are hidden
+    // at first
+    document.addEventListener( "impress:stepenter", function( event ) {
+        var step = event.target;
+        var visible = step.querySelectorAll( ".substep-visible" );
+        for ( var i = 0; i < visible.length; i++ ) {
+            visible[ i ].classList.remove( "substep-visible" );
+        }
+    }, false );
+
+    // API for others to reveal/hide next substep ////////////////////////////////////////////////
+    document.addEventListener( "impress:substep:show", function() {
+        showSubstepIfAny( activeStep );
+    }, false );
+
+    document.addEventListener( "impress:substep:hide", function() {
+        hideSubstepIfAny( activeStep );
+    }, false );
+
+} )( document, window );
+
+
+/**
+ * Support for swipe and tap on touch devices
+ *
+ * This plugin implements navigation for plugin devices, via swiping left/right,
+ * or tapping on the left/right edges of the screen.
+ *
+ *
+ *
+ * Copyright 2015: Andrew Dunai (@and3rson)
+ * Modified to a plugin, 2016: Henrik Ingo (@henrikingo)
+ *
+ * MIT License
+ */
+/* global document, window */
+( function( document, window ) {
+    "use strict";
+
+    // Touch handler to detect swiping left and right based on window size.
+    // If the difference in X change is bigger than 1/20 of the screen width,
+    // we simply call an appropriate API function to complete the transition.
+    var startX = 0;
+    var lastX = 0;
+    var lastDX = 0;
+    var threshold = window.innerWidth / 20;
+
+    document.addEventListener( "touchstart", function( event ) {
+        lastX = startX = event.touches[ 0 ].clientX;
+    } );
+
+    document.addEventListener( "touchmove", function( event ) {
+         var x = event.touches[ 0 ].clientX;
+         var diff = x - startX;
+
+         // To be used in touchend
+         lastDX = lastX - x;
+         lastX = x;
+
+         window.impress().swipe( diff / window.innerWidth );
+     } );
+
+     document.addEventListener( "touchend", function() {
+         var totalDiff = lastX - startX;
+         if ( Math.abs( totalDiff ) > window.innerWidth / 5 && ( totalDiff * lastDX ) <= 0 ) {
+             if ( totalDiff > window.innerWidth / 5 && lastDX <= 0 ) {
+                 window.impress().prev();
+             } else if ( totalDiff < -window.innerWidth / 5 && lastDX >= 0 ) {
+                 window.impress().next();
+             }
+         } else if ( Math.abs( lastDX ) > threshold ) {
+             if ( lastDX < -threshold ) {
+                 window.impress().prev();
+             } else if ( lastDX > threshold ) {
+                 window.impress().next();
+             }
+         } else {
+
+             // No movement - move (back) to the current slide
+             window.impress().goto( document.querySelector( "#impress .step.active" ) );
+         }
+     } );
+
+     document.addEventListener( "touchcancel", function() {
+
+             // Move (back) to the current slide
+             window.impress().goto( document.querySelector( "#impress .step.active" ) );
+     } );
+
+} )( document, window );
+
+/**
+ * Toolbar plugin
+ *
+ * This plugin provides a generic graphical toolbar. Other plugins that
+ * want to expose a button or other widget, can add those to this toolbar.
+ *
+ * Using a single consolidated toolbar for all GUI widgets makes it easier
+ * to position and style the toolbar rather than having to do that for lots
+ * of different divs.
+ *
+ *
+ * *** For presentation authors: *****************************************
+ *
+ * To add/activate the toolbar in your presentation, add this div:
+ *
+ *     <div id="impress-toolbar"></div>
+ *
+ * Styling the toolbar is left to presentation author. Here's an example CSS:
+ *
+ *    .impress-enabled div#impress-toolbar {
+ *        position: fixed;
+ *        right: 1px;
+ *        bottom: 1px;
+ *        opacity: 0.6;
+ *    }
+ *    .impress-enabled div#impress-toolbar > span {
+ *        margin-right: 10px;
+ *    }
+ *
+ * The [mouse-timeout](../mouse-timeout/README.md) plugin can be leveraged to hide
+ * the toolbar from sight, and only make it visible when mouse is moved.
+ *
+ *    body.impress-mouse-timeout div#impress-toolbar {
+ *        display: none;
+ *    }
+ *
+ *
+ * *** For plugin authors **********************************************
+ *
+ * To add a button to the toolbar, trigger the `impress:toolbar:appendChild`
+ * or `impress:toolbar:insertBefore` events as appropriate. The detail object
+ * should contain following parameters:
+ *
+ *    { group : 1,                       // integer. Widgets with the same group are grouped inside
+ *                                       // the same <span> element.
+ *      html : "<button>Click</button>", // The html to add.
+ *      callback : "mycallback",         // Toolbar plugin will trigger event
+ *                                       // `impress:toolbar:added:mycallback` when done.
+ *      before: element }                // The reference element for an insertBefore() call.
+ *
+ * You should also listen to the `impress:toolbar:added:mycallback` event. At
+ * this point you can find the new widget in the DOM, and for example add an
+ * event listener to it.
+ *
+ * You are free to use any integer for the group. It's ok to leave gaps. It's
+ * ok to co-locate with widgets for another plugin, if you think they belong
+ * together.
+ *
+ * See navigation-ui for an example.
+ *
+ * Copyright 2016 Henrik Ingo (@henrikingo)
+ * Released under the MIT license.
+ */
+
+/* global document */
+
+( function( document ) {
+    "use strict";
+    var toolbar = document.getElementById( "impress-toolbar" );
+    var groups = [];
+
+    /**
+     * Get the span element that is a child of toolbar, identified by index.
+     *
+     * If span element doesn't exist yet, it is created.
+     *
+     * Note: Because of Run-to-completion, this is not a race condition.
+     * https://developer.mozilla.org/en/docs/Web/JavaScript/EventLoop#Run-to-completion
+     *
+     * :param: index   Method will return the element <span id="impress-toolbar-group-{index}">
+     */
+    var getGroupElement = function( index ) {
+        var id = "impress-toolbar-group-" + index;
+        if ( !groups[ index ] ) {
+            groups[ index ] = document.createElement( "span" );
+            groups[ index ].id = id;
+            var nextIndex = getNextGroupIndex( index );
+            if ( nextIndex === undefined ) {
+                toolbar.appendChild( groups[ index ] );
+            } else {
+                toolbar.insertBefore( groups[ index ], groups[ nextIndex ] );
+            }
+        }
+        return groups[ index ];
+    };
+
+    /**
+     * Get the span element from groups[] that is immediately after given index.
+     *
+     * This can be used to find the reference node for an insertBefore() call.
+     * If no element exists at a larger index, returns undefined. (In this case,
+     * you'd use appendChild() instead.)
+     *
+     * Note that index needn't itself exist in groups[].
+     */
+    var getNextGroupIndex = function( index ) {
+        var i = index + 1;
+        while ( !groups[ i ] && i < groups.length ) {
+            i++;
+        }
+        if ( i < groups.length ) {
+            return i;
+        }
+    };
+
+    // API
+    // Other plugins can add and remove buttons by sending them as events.
+    // In return, toolbar plugin will trigger events when button was added.
+    if ( toolbar ) {
+        /**
+         * Append a widget inside toolbar span element identified by given group index.
+         *
+         * :param: e.detail.group    integer specifying the span element where widget will be placed
+         * :param: e.detail.element  a dom element to add to the toolbar
+         */
+        toolbar.addEventListener( "impress:toolbar:appendChild", function( e ) {
+            var group = getGroupElement( e.detail.group );
+            group.appendChild( e.detail.element );
+        } );
+
+        /**
+         * Add a widget to toolbar using insertBefore() DOM method.
+         *
+         * :param: e.detail.before   the reference dom element, before which new element is added
+         * :param: e.detail.element  a dom element to add to the toolbar
+         */
+        toolbar.addEventListener( "impress:toolbar:insertBefore", function( e ) {
+            toolbar.insertBefore( e.detail.element, e.detail.before );
+        } );
+
+        /**
+         * Remove the widget in e.detail.remove.
+         */
+        toolbar.addEventListener( "impress:toolbar:removeWidget", function( e ) {
+            toolbar.removeChild( e.detail.remove );
+        } );
+
+        document.addEventListener( "impress:init", function( event ) {
+            var api = event.detail.api;
+            api.lib.gc.pushCallback( function() {
+                toolbar.innerHTML = "";
+                groups = [];
+            } );
+        } );
+    } // If toolbar
+
+} )( document );
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(32);
+var content = __webpack_require__(34);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -19857,7 +23346,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(34)(content, options);
+var update = __webpack_require__(15)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -19874,471 +23363,17 @@ if(false) {
 }
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(33)(undefined);
+exports = module.exports = __webpack_require__(7)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "/*\n    So you like the style of impress.js demo?\n    Or maybe you are just curious how it was done?\n\n    You couldn't find a better place to find out!\n\n    Welcome to the stylesheet impress.js demo presentation.\n\n    Please remember that it is not meant to be a part of impress.js and is\n    not required by impress.js.\n    I expect that anyone creating a presentation for impress.js would create\n    their own set of styles.\n\n    But feel free to read through it and learn how to get the most of what\n    impress.js provides.\n\n    And let me be your guide.\n\n    Shall we begin?\n*/\n\n\n/*\n    We start with a good ol' reset.\n    That's the one by Eric Meyer http://meyerweb.com/eric/tools/css/reset/\n\n    You can probably argue if it is needed here, or not, but for sure it\n    doesn't do any harm and gives us a fresh start.\n*/\n\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n    margin: 0;\n    padding: 0;\n    border: 0;\n    font-size: 100%;\n    font: inherit;\n    vertical-align: baseline;\n}\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n    display: block;\n}\nbody {\n    line-height: 1;\n}\nol, ul {\n    list-style: none;\n}\nblockquote, q {\n    quotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n    content: '';\n    content: none;\n}\n\ntable {\n    border-collapse: collapse;\n    border-spacing: 0;\n}\n\n/*\n    Now here is when interesting things start to appear.\n\n    We set up <body> styles with default font and nice gradient in the background.\n    And yes, there is a lot of repetition there because of -prefixes but we don't\n    want to leave anybody behind.\n*/\nbody {\n    font-family: 'PT Sans', sans-serif;\n    min-height: 740px;\n\n    background: rgb(215, 215, 215);\n    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 500, from(rgb(240, 240, 240)), to(rgb(190, 190, 190)));\n    background: -webkit-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:    -moz-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:     -ms-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:      -o-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:         radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n}\n\n/*\n    Now let's bring some text styles back ...\n*/\nb, strong { font-weight: bold }\ni, em { font-style: italic }\n\n/*\n    ... and give links a nice look.\n*/\na {\n    color: inherit;\n    text-decoration: none;\n    padding: 0 0.1em;\n    background: rgba(255,255,255,0.5);\n    text-shadow: -1px -1px 2px rgba(100,100,100,0.9);\n    border-radius: 0.2em;\n\n    -webkit-transition: 0.5s;\n    -moz-transition:    0.5s;\n    -ms-transition:     0.5s;\n    -o-transition:      0.5s;\n    transition:         0.5s;\n}\n\na:hover,\na:focus {\n    background: rgba(255,255,255,1);\n    text-shadow: -1px -1px 2px rgba(100,100,100,0.5);\n}\n\n/*\n    Because the main point behind the impress.js demo is to demo impress.js\n    we display a fallback message for users with browsers that don't support\n    all the features required by it.\n\n    All of the content will be still fully accessible for them, but I want\n    them to know that they are missing something - that's what the demo is\n    about, isn't it?\n\n    And then we hide the message, when support is detected in the browser.\n*/\n\n.fallback-message {\n    font-family: sans-serif;\n    line-height: 1.3;\n\n    width: 780px;\n    padding: 10px 10px 0;\n    margin: 20px auto;\n\n    border: 1px solid #E4C652;\n    border-radius: 10px;\n    background: #EEDC94;\n}\n\n.fallback-message p {\n    margin-bottom: 10px;\n}\n\n.impress-supported .fallback-message {\n    display: none;\n}\n\n/*\n    Now let's style the presentation steps.\n\n    We start with basics to make sure it displays correctly in everywhere ...\n*/\n\n.step {\n    position: relative;\n    width: 900px;\n    padding: 40px;\n    margin: 20px auto;\n\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing:    border-box;\n    -ms-box-sizing:     border-box;\n    -o-box-sizing:      border-box;\n    box-sizing:         border-box;\n\n    font-family: 'PT Serif', georgia, serif;\n    font-size: 48px;\n    line-height: 1.5;\n}\n\n/*\n    ... and we enhance the styles for impress.js.\n\n    Basically we remove the margin and make inactive steps a little bit transparent.\n*/\n.impress-enabled .step {\n    margin: 0;\n    opacity: 0.3;\n\n    -webkit-transition: opacity 1s;\n    -moz-transition:    opacity 1s;\n    -ms-transition:     opacity 1s;\n    -o-transition:      opacity 1s;\n    transition:         opacity 1s;\n}\n\n.impress-enabled .step.active { opacity: 1 }\n\n/*\n    These 'slide' step styles were heavily inspired by HTML5 Slides:\n    http://html5slides.googlecode.com/svn/trunk/styles.css\n\n    ;)\n\n    They cover everything what you see on first three steps of the demo.\n*/\n.slide {\n    display: block;\n\n    width: 900px;\n    height: 700px;\n    padding: 40px 60px;\n\n    background-color: white;\n    border: 1px solid rgba(0, 0, 0, .3);\n    border-radius: 10px;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);\n\n    color: rgb(102, 102, 102);\n    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);\n\n    font-family: 'Open Sans', Arial, sans-serif;\n    font-size: 30px;\n    line-height: 36px;\n    letter-spacing: -1px;\n}\n\n.slide q {\n    display: block;\n    font-size: 50px;\n    line-height: 72px;\n\n    margin-top: 100px;\n}\n\n.slide q strong {\n    white-space: nowrap;\n}\n\n/*\n    And now we start to style each step separately.\n\n    I agree that this may be not the most efficient, object-oriented and\n    scalable way of styling, but most of steps have quite a custom look\n    and typography tricks here and there, so they had to be styled separately.\n\n    First is the title step with a big <h1> (no room for padding) and some\n    3D positioning along Z axis.\n*/\n\n#title {\n    padding: 0;\n}\n\n#title .try {\n    font-size: 64px;\n    position: absolute;\n    top: -0.5em;\n    left: 1.5em;\n\n    -webkit-transform: translateZ(20px);\n    -moz-transform:    translateZ(20px);\n    -ms-transform:     translateZ(20px);\n    -o-transform:      translateZ(20px);\n    transform:         translateZ(20px);\n}\n\n#title h1 {\n    font-size: 190px;\n\n    -webkit-transform: translateZ(50px);\n    -moz-transform:    translateZ(50px);\n    -ms-transform:     translateZ(50px);\n    -o-transform:      translateZ(50px);\n    transform:         translateZ(50px);\n}\n\n#title .footnote {\n    font-size: 32px;\n}\n\n/*\n    Second step is nothing special, just a text with a link, so it doesn't need\n    any special styling.\n\n    Let's move to 'big thoughts' with centered text and custom font sizes.\n*/\n#big {\n    width: 600px;\n    text-align: center;\n    font-size: 60px;\n    line-height: 1;\n}\n\n#big b {\n    display: block;\n    font-size: 250px;\n    line-height: 250px;\n}\n\n#big .thoughts {\n    font-size: 90px;\n    line-height: 150px;\n}\n\n/*\n    'Tiny ideas' just need some tiny styling.\n*/\n#tiny {\n    width: 500px;\n    text-align: center;\n}\n\n/*\n    This step has some animated text ...\n*/\n#ing { width: 500px }\n\n/*\n    ... so we define display to `inline-block` to enable transforms and\n    transition duration to 0.5s ...\n*/\n#ing b {\n    display: inline-block;\n    -webkit-transition: 0.5s;\n    -moz-transition:    0.5s;\n    -ms-transition:     0.5s;\n    -o-transition:      0.5s;\n    transition:         0.5s;\n}\n\n/*\n    ... and we want 'positioning` word to move up a bit when the step gets\n    `present` class ...\n*/\n#ing.present .positioning {\n    -webkit-transform: translateY(-10px);\n    -moz-transform:    translateY(-10px);\n    -ms-transform:     translateY(-10px);\n    -o-transform:      translateY(-10px);\n    transform:         translateY(-10px);\n}\n\n/*\n    ... 'rotating' to rotate a quarter of a second later ...\n*/\n#ing.present .rotating {\n    -webkit-transform: rotate(-10deg);\n    -moz-transform:    rotate(-10deg);\n    -ms-transform:     rotate(-10deg);\n    -o-transform:      rotate(-10deg);\n    transform:         rotate(-10deg);\n\n    -webkit-transition-delay: 0.25s;\n    -moz-transition-delay:    0.25s;\n    -ms-transition-delay:     0.25s;\n    -o-transition-delay:      0.25s;\n    transition-delay:         0.25s;\n}\n\n/*\n    ... and 'scaling' to scale down after another quarter of a second.\n*/\n#ing.present .scaling {\n    -webkit-transform: scale(0.7);\n    -moz-transform:    scale(0.7);\n    -ms-transform:     scale(0.7);\n    -o-transform:      scale(0.7);\n    transform:         scale(0.7);\n\n    -webkit-transition-delay: 0.5s;\n    -moz-transition-delay:    0.5s;\n    -ms-transition-delay:     0.5s;\n    -o-transition-delay:      0.5s;\n    transition-delay:         0.5s;\n}\n\n/*\n    The 'imagination' step is again some boring font-sizing.\n*/\n\n#imagination {\n    width: 600px;\n}\n\n#imagination .imagination {\n    font-size: 78px;\n}\n\n/*\n    There is nothing really special about 'use the source, Luke' step, too,\n    except maybe of the Yoda background.\n\n    As you can see below I've 'hard-coded' it in data URL.\n    That's not the best way to serve images, but because that's just this one\n    I decided it will be OK to have it this way.\n\n    Just make sure you don't blindly copy this approach.\n*/\n#source {\n    width: 700px;\n    padding-bottom: 300px;\n\n    /* Yoda Icon :: Pixel Art from Star Wars http://www.pixeljoint.com/pixelart/1423.htm */\n    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAAEYCAMAAACwUBm+AAAAAXNSR0IArs4c6QAAAKtQTFRFsAAAvbWSLUUrLEQqY1s8UYJMqJ1vNTEgOiIdIzYhjIFVLhsXZ6lgSEIsP2U8JhcCVzMsSXZEgXdOO145XJdWOl03LzAYMk4vSXNExr+hwcuxRTs1Qmk+RW9Am49eFRANQz4pUoNMQWc+OSMDTz0wLBsCNVMxa2NBOyUDUoNNSnlEWo9VRGxAVzYFl6tXCggHbLNmMUIcHhwTXkk5f3VNRT8wUT8xAAAACQocRBWFFwAAAAF0Uk5TAEDm2GYAAAPCSURBVHja7d3JctNAFIZRMwRCCGEmzPM8z/D+T8bu/ptbXXJFdij5fMt2Wuo+2UgqxVmtttq5WVotLzBgwIABAwYMGDCn0qVqbo69psPqVpWx+1XG5iaavF8wYMCAAQMGDBgwi4DJ6Y6qkxB1HNlcN3a92gbR5P2CAQMGDBgwYMCAWSxMlrU+UY5yu2l9okfV4bAxUVbf7TJnAwMGDBgwYMCAAbMLMHeqbGR82Zy+VR1Ht81nVca6R+UdTLaU24Ruzd3qM/e4yjnAgAEDBgwYMGDA7AJMd1l/3NRdVGcj3eX/2WEhCmDGxnM7yqygu8XIPjJj8iN/MGDAgAEDBgwYMAuDGb8q0RGlLCHLv1t9qDKWn3vdNHVuEI6HPaxO9Jo3GDBgwIABAwYMmIXBdC9ShGgMk+XnkXUeuGcsP/e1+lhNnZsL/G5Vs3OAAQMGDBgwYMCAWSxMR3SzOmraG5atdy9wZKzb+vg16qyqe2FltbnAgAEDBgwYMGDALAxmTJSuN3WA76rnVca6GTnemGN1WoEBAwYMGDBgwIBZGMxUomy4+xO899V4LAg5Xnc2MGDAgAEDBgwYMGA218Wq+2K1LDqvY9xZu8zN8fICdM6btYABAwYMGDBgwIABMzfH0+pGU5afze2tXebmeAfVz+p8BQYMGDBgwIABAwbMPBzZ+oWmfJrln1273FhkbHzee9WWbw7AgAEDBgwYMGDALAKm43hcdctKgblcPamOhuXnXlY5Xs6bsW4FGyQCAwYMGDBgwIABswiYMceZKgvMo+h8mrHLTdn676rj+FEFoTtHd8MwOxEYMGDAgAEDBgyYRcBM5UhXqiymW3R3c9ARhWO/OmjqfjVZy+xEYMCAAQMGDBgwYBYG073OnCV0RFNhMhaOa9WfKmOB6XjHMN1tQmaAAQMGDBgwYMCA2VWY7vXjz1U4croAzgPztwIDBgwYMGDAgAEDZhswh035NBw59Dww3RgYMGDAgAEDBgwYMJuD6f4tXT7NUqfCdBvZLkxXdgQGDBgwYMCAAQNmt2DGj8WzwAfV/w7T/aq7mxwwYMCAAQMGDBgwuwqTOo7uTwTngflSzQ3TdaJvAwEDBgwYMGDAgAED5gSvgbyo5oHZ4Pc+gwEDBgwYMGDAgAEzhOm+5G0qTGaAAQMGDBgwYMCAAXNaMOcnls3tNwWm+zRzp54NDBgwYMCAAQMGDJh5YNL36k1TLuGvVq+qnKMbS5n7tulT9asCAwYMGDBgwIABA2ZumKuztLnjgQEDBgwYMGDAgNl5mH/4/ltKA6vBNAAAAABJRU5ErkJggg==);\n    background-position: bottom right;\n    background-repeat: no-repeat;\n}\n\n#source q {\n    font-size: 60px;\n}\n\n/*\n    And the \"it's in 3D\" step again brings some 3D typography - just for fun.\n\n    Because we want to position <span> elements in 3D we set transform-style to\n    `preserve-3d` on the paragraph.\n    It is not needed by webkit browsers, but it is in Firefox. It's hard to say\n    which behaviour is correct as 3D transforms spec is not very clear about it.\n*/\n#its-in-3d p {\n    -webkit-transform-style: preserve-3d;\n    -moz-transform-style:    preserve-3d; /* Y U need this Firefox?! */\n    -ms-transform-style:     preserve-3d;\n    -o-transform-style:      preserve-3d;\n    transform-style:         preserve-3d;\n}\n\n/*\n    Below we position each word separately along Z axis and we want it to transition\n    to default position in 0.5s when the step gets `present` class.\n\n    Quite a simple idea, but lot's of styles and prefixes.\n*/\n#its-in-3d span,\n#its-in-3d b {\n    display: inline-block;\n    -webkit-transform: translateZ(40px);\n    -moz-transform:    translateZ(40px);\n    -ms-transform:     translateZ(40px);\n    -o-transform:      translateZ(40px);\n     transform:        translateZ(40px);\n\n    -webkit-transition: 0.5s;\n    -moz-transition:    0.5s;\n    -ms-transition:     0.5s;\n    -o-transition:      0.5s;\n    transition:         0.5s;\n}\n\n#its-in-3d .have {\n    -webkit-transform: translateZ(-40px);\n    -moz-transform:    translateZ(-40px);\n    -ms-transform:     translateZ(-40px);\n    -o-transform:      translateZ(-40px);\n    transform:         translateZ(-40px);\n}\n\n#its-in-3d .you {\n    -webkit-transform: translateZ(20px);\n    -moz-transform:    translateZ(20px);\n    -ms-transform:     translateZ(20px);\n    -o-transform:      translateZ(20px);\n    transform:         translateZ(20px);\n}\n\n#its-in-3d .noticed {\n    -webkit-transform: translateZ(-40px);\n    -moz-transform:    translateZ(-40px);\n    -ms-transform:     translateZ(-40px);\n    -o-transform:      translateZ(-40px);\n    transform:         translateZ(-40px);\n}\n\n#its-in-3d .its {\n    -webkit-transform: translateZ(60px);\n    -moz-transform:    translateZ(60px);\n    -ms-transform:     translateZ(60px);\n    -o-transform:      translateZ(60px);\n    transform:         translateZ(60px);\n}\n\n#its-in-3d .in {\n    -webkit-transform: translateZ(-10px);\n    -moz-transform:    translateZ(-10px);\n    -ms-transform:     translateZ(-10px);\n    -o-transform:      translateZ(-10px);\n    transform:         translateZ(-10px);\n}\n\n#its-in-3d .footnote {\n    font-size: 32px;\n\n    -webkit-transform: translateZ(-10px);\n    -moz-transform:    translateZ(-10px);\n    -ms-transform:     translateZ(-10px);\n    -o-transform:      translateZ(-10px);\n    transform:         translateZ(-10px);\n}\n\n#its-in-3d.present span,\n#its-in-3d.present b {\n    -webkit-transform: translateZ(0px);\n    -moz-transform:    translateZ(0px);\n    -ms-transform:     translateZ(0px);\n    -o-transform:      translateZ(0px);\n    transform:         translateZ(0px);\n}\n\n/*\n    The last step is an overview.\n    There is no content in it, so we make sure it's not visible because we want\n    to be able to click on other steps.\n\n*/\n#overview { display: none }\n\n/*\n    We also make other steps visible and give them a pointer cursor using the\n    `impress-on-` class.\n*/\n.impress-on-overview .step {\n    opacity: 1;\n    cursor: pointer;\n}\n\n\n/*\n    Now, when we have all the steps styled let's give users a hint how to navigate\n    around the presentation.\n\n    The best way to do this would be to use JavaScript, show a delayed hint for a\n    first time users, then hide it and store a status in cookie or localStorage...\n\n    But I wanted to have some CSS fun and avoid additional scripting...\n\n    Let me explain it first, so maybe the transition magic will be more readable\n    when you read the code.\n\n    First of all I wanted the hint to appear only when user is idle for a while.\n    You can't detect the 'idle' state in CSS, but I delayed a appearing of the\n    hint by 5s using transition-delay.\n\n    You also can't detect in CSS if the user is a first-time visitor, so I had to\n    make an assumption that I'll only show the hint on the first step. And when\n    the step is changed hide the hint, because I can assume that user already\n    knows how to navigate.\n\n    To summarize it - hint is shown when the user is on the first step for longer\n    than 5 seconds.\n\n    The other problem I had was caused by the fact that I wanted the hint to fade\n    in and out. It can be easily achieved by transitioning the opacity property.\n    But that also meant that the hint was always on the screen, even if totally\n    transparent. It covered part of the screen and you couldn't correctly clicked\n    through it.\n    Unfortunately you cannot transition between display `block` and `none` in pure\n    CSS, so I needed a way to not only fade out the hint but also move it out of\n    the screen.\n\n    I solved this problem by positioning the hint below the bottom of the screen\n    with CSS transform and moving it up to show it. But I also didn't want this move\n    to be visible. I wanted the hint only to fade in and out visually, so I delayed\n    the fade in transition, so it starts when the hint is already in its correct\n    position on the screen.\n\n    I know, it sounds complicated ... maybe it would be easier with the code?\n*/\n\n.hint {\n    /*\n        We hide the hint until presentation is started and from browsers not supporting\n        impress.js, as they will have a linear scrollable view ...\n    */\n    display: none;\n\n    /*\n        ... and give it some fixed position and nice styles.\n    */\n    position: fixed;\n    left: 0;\n    right: 0;\n    bottom: 200px;\n\n    background: rgba(0,0,0,0.5);\n    color: #EEE;\n    text-align: center;\n\n    font-size: 50px;\n    padding: 20px;\n\n    z-index: 100;\n\n    /*\n        By default we don't want the hint to be visible, so we make it transparent ...\n    */\n    opacity: 0;\n\n    /*\n        ... and position it below the bottom of the screen (relative to it's fixed position)\n    */\n    -webkit-transform: translateY(400px);\n    -moz-transform:    translateY(400px);\n    -ms-transform:     translateY(400px);\n    -o-transform:      translateY(400px);\n    transform:         translateY(400px);\n\n    /*\n        Now let's imagine that the hint is visible and we want to fade it out and move out\n        of the screen.\n\n        So we define the transition on the opacity property with 1s duration and another\n        transition on transform property delayed by 1s so it will happen after the fade out\n        on opacity finished.\n\n        This way user will not see the hint moving down.\n    */\n    -webkit-transition: opacity 1s, -webkit-transform 0.5s 1s;\n    -moz-transition:    opacity 1s,    -moz-transform 0.5s 1s;\n    -ms-transition:     opacity 1s,     -ms-transform 0.5s 1s;\n    -o-transition:      opacity 1s,      -o-transform 0.5s 1s;\n    transition:         opacity 1s,         transform 0.5s 1s;\n}\n\n/*\n    Now we 'enable' the hint when presentation is initialized ...\n*/\n.impress-enabled .hint { display: block }\n\n/*\n    ... and we will show it when the first step (with id 'bored') is active.\n*/\n.impress-on-bored .hint {\n    /*\n        We remove the transparency and position the hint in its default fixed\n        position.\n    */\n    opacity: 1;\n\n    -webkit-transform: translateY(0px);\n    -moz-transform:    translateY(0px);\n    -ms-transform:     translateY(0px);\n    -o-transform:      translateY(0px);\n    transform:         translateY(0px);\n\n    /*\n        Now for fade in transition we have the oposite situation from the one\n        above.\n\n        First after 4.5s delay we animate the transform property to move the hint\n        into its correct position and after that we fade it in with opacity\n        transition.\n    */\n    -webkit-transition: opacity 1s 5s, -webkit-transform 0.5s 4.5s;\n    -moz-transition:    opacity 1s 5s,    -moz-transform 0.5s 4.5s;\n    -ms-transition:     opacity 1s 5s,     -ms-transform 0.5s 4.5s;\n    -o-transition:      opacity 1s 5s,      -o-transform 0.5s 4.5s;\n    transition:         opacity 1s 5s,         transform 0.5s 4.5s;\n}\n\n/*\n    And as the last thing there is a workaround for quite strange bug.\n    It happens a lot in Chrome. I don't remember if I've seen it in Firefox.\n\n    Sometimes the element positioned in 3D (especially when it's moved back\n    along Z axis) is not clickable, because it falls 'behind' the <body>\n    element.\n\n    To prevent this, I decided to make <body> non clickable by setting\n    pointer-events property to `none` value.\n    Value if this property is inherited, so to make everything else clickable\n    I bring it back on the #impress element.\n\n    If you want to know more about `pointer-events` here are some docs:\n    https://developer.mozilla.org/en/CSS/pointer-events\n\n    There is one very important thing to notice about this workaround - it makes\n    everything 'unclickable' except what's in #impress element.\n\n    So use it wisely ... or don't use at all.\n*/\n.impress-enabled          { pointer-events: none }\n.impress-enabled #impress { pointer-events: auto }\n\n/*\n    There is one funny thing I just realized.\n\n    Thanks to this workaround above everything except #impress element is invisible\n    for click events. That means that the hint element is also not clickable.\n    So basically all of this transforms and delayed transitions trickery was probably\n    not needed at all...\n\n    But it was fun to learn about it, wasn't it?\n*/\n\n/*\n    That's all I have for you in this file.\n    Thanks for reading. I hope you enjoyed it at least as much as I enjoyed writing it\n    for you.\n*/\n", ""]);
+exports.push([module.i, "/*\n    So you like the style of impress.js demo?\n    Or maybe you are just curious how it was done?\n\n    You couldn't find a better place to find out!\n\n    Welcome to the stylesheet impress.js demo presentation.\n\n    Please remember that it is not meant to be a part of impress.js and is\n    not required by impress.js.\n    I expect that anyone creating a presentation for impress.js would create\n    their own set of styles.\n\n    But feel free to read through it and learn how to get the most of what\n    impress.js provides.\n\n    And let me be your guide.\n\n    Shall we begin?\n*/\n\n\n/*\n    We start with a good ol' reset.\n    That's the one by Eric Meyer http://meyerweb.com/eric/tools/css/reset/\n\n    You can probably argue if it is needed here, or not, but for sure it\n    doesn't do any harm and gives us a fresh start.\n*/\n\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n    margin: 0;\n    padding: 0;\n    border: 0;\n    font-size: 100%;\n    font: inherit;\n    vertical-align: baseline;\n}\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n    display: block;\n}\nbody {\n    line-height: 1;\n}\nol, ul {\n    list-style: none;\n}\nblockquote, q {\n    quotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n    content: '';\n    content: none;\n}\n\ntable {\n    border-collapse: collapse;\n    border-spacing: 0;\n}\n\n/*\n    Now here is when interesting things start to appear.\n\n    We set up <body> styles with default font and nice gradient in the background.\n    And yes, there is a lot of repetition there because of -prefixes but we don't\n    want to leave anybody behind.\n*/\nbody {\n    font-family: 'PT Sans', sans-serif;\n    min-height: 740px;\n\n    background: rgb(215, 215, 215);\n    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 500, from(rgb(240, 240, 240)), to(rgb(190, 190, 190)));\n    background: -webkit-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:    -moz-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:     -ms-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:      -o-radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n    background:         radial-gradient(rgb(240, 240, 240), rgb(190, 190, 190));\n}\n\n/*\n    Now let's bring some text styles back ...\n*/\nb, strong { font-weight: bold }\ni, em { font-style: italic }\n\n/*\n    ... and give links a nice look.\n*/\na {\n    color: inherit;\n    text-decoration: none;\n    padding: 0 0.1em;\n    background: rgba(255,255,255,0.5);\n    text-shadow: -1px -1px 2px rgba(100,100,100,0.9);\n    border-radius: 0.2em;\n\n    -webkit-transition: 0.5s;\n    -moz-transition:    0.5s;\n    -ms-transition:     0.5s;\n    -o-transition:      0.5s;\n    transition:         0.5s;\n}\n\na:hover,\na:focus {\n    background: rgba(255,255,255,1);\n    text-shadow: -1px -1px 2px rgba(100,100,100,0.5);\n}\n\n/*\n    Because the main point behind the impress.js demo is to demo impress.js\n    we display a fallback message for users with browsers that don't support\n    all the features required by it.\n\n    All of the content will be still fully accessible for them, but I want\n    them to know that they are missing something - that's what the demo is\n    about, isn't it?\n\n    And then we hide the message, when support is detected in the browser.\n*/\n\n.fallback-message {\n    font-family: sans-serif;\n    line-height: 1.3;\n\n    width: 780px;\n    padding: 10px 10px 0;\n    margin: 20px auto;\n\n    border: 1px solid #E4C652;\n    border-radius: 10px;\n    background: #EEDC94;\n}\n\n.fallback-message p {\n    margin-bottom: 10px;\n}\n\n.impress-supported .fallback-message {\n    display: none;\n}\n\n/*\n    Now let's style the presentation steps.\n\n    We start with basics to make sure it displays correctly in everywhere ...\n*/\n\n.step {\n    position: relative;\n    width: 900px;\n    padding: 40px;\n    margin: 20px auto;\n\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing:    border-box;\n    -ms-box-sizing:     border-box;\n    -o-box-sizing:      border-box;\n    box-sizing:         border-box;\n\n    font-family: 'PT Serif', georgia, serif;\n    font-size: 48px;\n    line-height: 1.5;\n}\n\n/*\n    ... and we enhance the styles for impress.js.\n\n    Basically we remove the margin and make inactive steps a little bit transparent.\n*/\n.impress-enabled .step {\n    margin: 0;\n    opacity: 0.3;\n\n    -webkit-transition: opacity 1s;\n    -moz-transition:    opacity 1s;\n    -ms-transition:     opacity 1s;\n    -o-transition:      opacity 1s;\n    transition:         opacity 1s;\n}\n\n.impress-enabled .step.active { opacity: 1 }\n\n/*\n    These 'slide' step styles were heavily inspired by HTML5 Slides:\n    http://html5slides.googlecode.com/svn/trunk/styles.css\n\n    ;)\n\n    They cover everything what you see on first three steps of the demo.\n*/\n.slide {\n    display: block;\n\n    width: 900px;\n    height: 700px;\n    padding: 40px 60px;\n\n    background-color: white;\n    border: 1px solid rgba(0, 0, 0, .3);\n    border-radius: 10px;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);\n\n    color: rgb(102, 102, 102);\n    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);\n\n    font-family: 'Open Sans', Arial, sans-serif;\n    font-size: 30px;\n    line-height: 36px;\n    letter-spacing: -1px;\n}\n\n.slide q {\n    display: block;\n    font-size: 50px;\n    line-height: 72px;\n\n    margin-top: 100px;\n}\n\n.slide q strong {\n    white-space: nowrap;\n}\n\n/*\n    And now we start to style each step separately.\n\n    I agree that this may be not the most efficient, object-oriented and\n    scalable way of styling, but most of steps have quite a custom look\n    and typography tricks here and there, so they had to be styled separately.\n\n    First is the title step with a big <h1> (no room for padding) and some\n    3D positioning along Z axis.\n*/\n\n#title {\n    padding: 0;\n}\n\n#title .try {\n    font-size: 64px;\n    position: absolute;\n    top: -0.5em;\n    left: 1.5em;\n\n    -webkit-transform: translateZ(20px);\n    -moz-transform:    translateZ(20px);\n    -ms-transform:     translateZ(20px);\n    -o-transform:      translateZ(20px);\n    transform:         translateZ(20px);\n}\n\n#title h1 {\n    font-size: 180px;\n\n    -webkit-transform: translateZ(50px);\n    -moz-transform:    translateZ(50px);\n    -ms-transform:     translateZ(50px);\n    -o-transform:      translateZ(50px);\n    transform:         translateZ(50px);\n}\n\n#title .footnote {\n    font-size: 32px;\n}\n\n/*\n    Second step is nothing special, just a text with a link, so it doesn't need\n    any special styling.\n\n    Let's move to 'big thoughts' with centered text and custom font sizes.\n*/\n#big {\n    width: 600px;\n    text-align: center;\n    font-size: 60px;\n    line-height: 1;\n}\n\n#big strong,\n#big b {\n    display: block;\n    font-size: 250px;\n    line-height: 250px;\n}\n\n#big .thoughts {\n    font-size: 90px;\n    line-height: 150px;\n}\n\n/*\n    'Tiny ideas' just need some tiny styling.\n*/\n#tiny {\n    width: 500px;\n    text-align: center;\n}\n\n/*\n    This step has some animated text ...\n*/\n#ing { width: 500px }\n\n/*\n    ... so we define display to `inline-block` to enable transforms and\n    transition duration to 0.5s ...\n*/\n#ing b {\n    display: inline-block;\n    -webkit-transition: 0.5s;\n    -moz-transition:    0.5s;\n    -ms-transition:     0.5s;\n    -o-transition:      0.5s;\n    transition:         0.5s;\n}\n\n/*\n    ... and we want 'positioning` word to move up a bit when the step gets\n    `present` class ...\n*/\n#ing.present .positioning {\n    -webkit-transform: translateY(-10px);\n    -moz-transform:    translateY(-10px);\n    -ms-transform:     translateY(-10px);\n    -o-transform:      translateY(-10px);\n    transform:         translateY(-10px);\n}\n\n/*\n    ... 'rotating' to rotate a quarter of a second later ...\n*/\n#ing.present .rotating {\n    -webkit-transform: rotate(-10deg);\n    -moz-transform:    rotate(-10deg);\n    -ms-transform:     rotate(-10deg);\n    -o-transform:      rotate(-10deg);\n    transform:         rotate(-10deg);\n\n    -webkit-transition-delay: 0.25s;\n    -moz-transition-delay:    0.25s;\n    -ms-transition-delay:     0.25s;\n    -o-transition-delay:      0.25s;\n    transition-delay:         0.25s;\n}\n\n/*\n    ... and 'scaling' to scale down after another quarter of a second.\n*/\n#ing.present .scaling {\n    -webkit-transform: scale(0.7);\n    -moz-transform:    scale(0.7);\n    -ms-transform:     scale(0.7);\n    -o-transform:      scale(0.7);\n    transform:         scale(0.7);\n\n    -webkit-transition-delay: 0.5s;\n    -moz-transition-delay:    0.5s;\n    -ms-transition-delay:     0.5s;\n    -o-transition-delay:      0.5s;\n    transition-delay:         0.5s;\n}\n\n/*\n    The 'imagination' step is again some boring font-sizing.\n*/\n\n#imagination {\n    width: 600px;\n}\n\n#imagination .imagination {\n    font-size: 78px;\n}\n\n/*\n    There is nothing really special about 'use the source, Luke' step, too,\n    except maybe of the Yoda background.\n\n    As you can see below I've 'hard-coded' it in data URL.\n    That's not the best way to serve images, but because that's just this one\n    I decided it will be OK to have it this way.\n\n    Just make sure you don't blindly copy this approach.\n*/\n#source {\n    width: 700px;\n    padding-bottom: 300px;\n\n    /* Yoda Icon :: Pixel Art from Star Wars http://www.pixeljoint.com/pixelart/1423.htm */\n    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAAEYCAMAAACwUBm+AAAAAXNSR0IArs4c6QAAAKtQTFRFsAAAvbWSLUUrLEQqY1s8UYJMqJ1vNTEgOiIdIzYhjIFVLhsXZ6lgSEIsP2U8JhcCVzMsSXZEgXdOO145XJdWOl03LzAYMk4vSXNExr+hwcuxRTs1Qmk+RW9Am49eFRANQz4pUoNMQWc+OSMDTz0wLBsCNVMxa2NBOyUDUoNNSnlEWo9VRGxAVzYFl6tXCggHbLNmMUIcHhwTXkk5f3VNRT8wUT8xAAAACQocRBWFFwAAAAF0Uk5TAEDm2GYAAAPCSURBVHja7d3JctNAFIZRMwRCCGEmzPM8z/D+T8bu/ptbXXJFdij5fMt2Wuo+2UgqxVmtttq5WVotLzBgwIABAwYMGDCn0qVqbo69psPqVpWx+1XG5iaavF8wYMCAAQMGDBgwi4DJ6Y6qkxB1HNlcN3a92gbR5P2CAQMGDBgwYMCAWSxMlrU+UY5yu2l9okfV4bAxUVbf7TJnAwMGDBgwYMCAAbMLMHeqbGR82Zy+VR1Ht81nVca6R+UdTLaU24Ruzd3qM/e4yjnAgAEDBgwYMGDA7AJMd1l/3NRdVGcj3eX/2WEhCmDGxnM7yqygu8XIPjJj8iN/MGDAgAEDBgwYMAuDGb8q0RGlLCHLv1t9qDKWn3vdNHVuEI6HPaxO9Jo3GDBgwIABAwYMmIXBdC9ShGgMk+XnkXUeuGcsP/e1+lhNnZsL/G5Vs3OAAQMGDBgwYMCAWSxMR3SzOmraG5atdy9wZKzb+vg16qyqe2FltbnAgAEDBgwYMGDALAxmTJSuN3WA76rnVca6GTnemGN1WoEBAwYMGDBgwIBZGMxUomy4+xO899V4LAg5Xnc2MGDAgAEDBgwYMGA218Wq+2K1LDqvY9xZu8zN8fICdM6btYABAwYMGDBgwIABMzfH0+pGU5afze2tXebmeAfVz+p8BQYMGDBgwIABAwbMPBzZ+oWmfJrln1273FhkbHzee9WWbw7AgAEDBgwYMGDALAKm43hcdctKgblcPamOhuXnXlY5Xs6bsW4FGyQCAwYMGDBgwIABswiYMceZKgvMo+h8mrHLTdn676rj+FEFoTtHd8MwOxEYMGDAgAEDBgyYRcBM5UhXqiymW3R3c9ARhWO/OmjqfjVZy+xEYMCAAQMGDBgwYBYG073OnCV0RFNhMhaOa9WfKmOB6XjHMN1tQmaAAQMGDBgwYMCA2VWY7vXjz1U4croAzgPztwIDBgwYMGDAgAEDZhswh035NBw59Dww3RgYMGDAgAEDBgwYMJuD6f4tXT7NUqfCdBvZLkxXdgQGDBgwYMCAAQNmt2DGj8WzwAfV/w7T/aq7mxwwYMCAAQMGDBgwuwqTOo7uTwTngflSzQ3TdaJvAwEDBgwYMGDAgAED5gSvgbyo5oHZ4Pc+gwEDBgwYMGDAgAEzhOm+5G0qTGaAAQMGDBgwYMCAAXNaMOcnls3tNwWm+zRzp54NDBgwYMCAAQMGDJh5YNL36k1TLuGvVq+qnKMbS5n7tulT9asCAwYMGDBgwIABA2ZumKuztLnjgQEDBgwYMGDAgNl5mH/4/ltKA6vBNAAAAABJRU5ErkJggg==);\n    background-position: bottom right;\n    background-repeat: no-repeat;\n}\n\n#source q {\n    font-size: 60px;\n}\n\n/*\n    And the \"it's in 3D\" step again brings some 3D typography - just for fun.\n\n    Because we want to position <span> elements in 3D we set transform-style to\n    `preserve-3d` on the paragraph.\n    It is not needed by webkit browsers, but it is in Firefox. It's hard to say\n    which behaviour is correct as 3D transforms spec is not very clear about it.\n*/\n#its-in-3d p {\n    -webkit-transform-style: preserve-3d;\n    -moz-transform-style:    preserve-3d; /* Y U need this Firefox?! */\n    -ms-transform-style:     preserve-3d;\n    -o-transform-style:      preserve-3d;\n    transform-style:         preserve-3d;\n}\n\n/*\n    Below we position each word separately along Z axis and we want it to transition\n    to default position in 0.5s when the step gets `present` class.\n\n    Quite a simple idea, but lot's of styles and prefixes.\n*/\n#its-in-3d span,\n#its-in-3d b {\n    display: inline-block;\n    -webkit-transform: translateZ(40px);\n    -moz-transform:    translateZ(40px);\n    -ms-transform:     translateZ(40px);\n    -o-transform:      translateZ(40px);\n     transform:        translateZ(40px);\n\n    -webkit-transition: 0.5s;\n    -moz-transition:    0.5s;\n    -ms-transition:     0.5s;\n    -o-transition:      0.5s;\n    transition:         0.5s;\n}\n\n#its-in-3d .have {\n    -webkit-transform: translateZ(-40px);\n    -moz-transform:    translateZ(-40px);\n    -ms-transform:     translateZ(-40px);\n    -o-transform:      translateZ(-40px);\n    transform:         translateZ(-40px);\n}\n\n#its-in-3d .you {\n    -webkit-transform: translateZ(20px);\n    -moz-transform:    translateZ(20px);\n    -ms-transform:     translateZ(20px);\n    -o-transform:      translateZ(20px);\n    transform:         translateZ(20px);\n}\n\n#its-in-3d .noticed {\n    -webkit-transform: translateZ(-40px);\n    -moz-transform:    translateZ(-40px);\n    -ms-transform:     translateZ(-40px);\n    -o-transform:      translateZ(-40px);\n    transform:         translateZ(-40px);\n}\n\n#its-in-3d .its {\n    -webkit-transform: translateZ(60px);\n    -moz-transform:    translateZ(60px);\n    -ms-transform:     translateZ(60px);\n    -o-transform:      translateZ(60px);\n    transform:         translateZ(60px);\n}\n\n#its-in-3d .in {\n    -webkit-transform: translateZ(-10px);\n    -moz-transform:    translateZ(-10px);\n    -ms-transform:     translateZ(-10px);\n    -o-transform:      translateZ(-10px);\n    transform:         translateZ(-10px);\n}\n\n#its-in-3d .footnote {\n    font-size: 32px;\n\n    -webkit-transform: translateZ(-10px);\n    -moz-transform:    translateZ(-10px);\n    -ms-transform:     translateZ(-10px);\n    -o-transform:      translateZ(-10px);\n    transform:         translateZ(-10px);\n}\n\n#its-in-3d.present span,\n#its-in-3d.present b {\n    -webkit-transform: translateZ(0px);\n    -moz-transform:    translateZ(0px);\n    -ms-transform:     translateZ(0px);\n    -o-transform:      translateZ(0px);\n    transform:         translateZ(0px);\n}\n\n/*\n    The last step is an overview.\n    There is no content in it, so we make sure it's not visible because we want\n    to be able to click on other steps.\n\n*/\n#overview { display: none }\n\n/*\n    We also make other steps visible and give them a pointer cursor using the\n    `impress-on-` class.\n*/\n.impress-on-overview .step {\n    opacity: 1;\n    cursor: pointer;\n}\n\n/*\n    This version of impress.js supports plugins, and in particular, a UI toolbar\n    plugin that allows easy navigation between steps and autoplay.\n*/\n.impress-enabled div#impress-toolbar {\n    position: fixed;\n    right: 1px;\n    bottom: 1px;\n    opacity: 0.6;\n}\n.impress-enabled div#impress-toolbar > span {\n    margin-right: 10px;\n}\n\n/*\n    With help from the mouse-timeout plugin, we can hide the toolbar and\n    have it show only when you move/click/touch the mouse.\n*/\nbody.impress-mouse-timeout div#impress-toolbar {\n    display: none;\n}\n\n/*\n    In fact, we can hide the mouse cursor itself too, when mouse isn't used.\n*/\nbody.impress-mouse-timeout {\n    cursor: none;\n}\n\n\n/*\n    Now, when we have all the steps styled let's give users a hint how to navigate\n    around the presentation.\n\n    The best way to do this would be to use JavaScript, show a delayed hint for a\n    first time users, then hide it and store a status in cookie or localStorage...\n\n    But I wanted to have some CSS fun and avoid additional scripting...\n\n    Let me explain it first, so maybe the transition magic will be more readable\n    when you read the code.\n\n    First of all I wanted the hint to appear only when user is idle for a while.\n    You can't detect the 'idle' state in CSS, but I delayed a appearing of the\n    hint by 5s using transition-delay.\n\n    You also can't detect in CSS if the user is a first-time visitor, so I had to\n    make an assumption that I'll only show the hint on the first step. And when\n    the step is changed hide the hint, because I can assume that user already\n    knows how to navigate.\n\n    To summarize it - hint is shown when the user is on the first step for longer\n    than 5 seconds.\n\n    The other problem I had was caused by the fact that I wanted the hint to fade\n    in and out. It can be easily achieved by transitioning the opacity property.\n    But that also meant that the hint was always on the screen, even if totally\n    transparent. It covered part of the screen and you couldn't correctly clicked\n    through it.\n    Unfortunately you cannot transition between display `block` and `none` in pure\n    CSS, so I needed a way to not only fade out the hint but also move it out of\n    the screen.\n\n    I solved this problem by positioning the hint below the bottom of the screen\n    with CSS transform and moving it up to show it. But I also didn't want this move\n    to be visible. I wanted the hint only to fade in and out visually, so I delayed\n    the fade in transition, so it starts when the hint is already in its correct\n    position on the screen.\n\n    I know, it sounds complicated ... maybe it would be easier with the code?\n*/\n\n.hint {\n    /*\n        We hide the hint until presentation is started and from browsers not supporting\n        impress.js, as they will have a linear scrollable view ...\n    */\n    display: none;\n\n    /*\n        ... and give it some fixed position and nice styles.\n    */\n    position: fixed;\n    left: 0;\n    right: 0;\n    bottom: 200px;\n\n    background: rgba(0,0,0,0.5);\n    color: #EEE;\n    text-align: center;\n\n    font-size: 50px;\n    padding: 20px;\n\n    z-index: 100;\n\n    /*\n        By default we don't want the hint to be visible, so we make it transparent ...\n    */\n    opacity: 0;\n\n    /*\n        ... and position it below the bottom of the screen (relative to it's fixed position)\n    */\n    -webkit-transform: translateY(400px);\n    -moz-transform:    translateY(400px);\n    -ms-transform:     translateY(400px);\n    -o-transform:      translateY(400px);\n    transform:         translateY(400px);\n\n    /*\n        Now let's imagine that the hint is visible and we want to fade it out and move out\n        of the screen.\n\n        So we define the transition on the opacity property with 1s duration and another\n        transition on transform property delayed by 1s so it will happen after the fade out\n        on opacity finished.\n\n        This way user will not see the hint moving down.\n    */\n    -webkit-transition: opacity 1s, -webkit-transform 0.5s 1s;\n    -moz-transition:    opacity 1s,    -moz-transform 0.5s 1s;\n    -ms-transition:     opacity 1s,     -ms-transform 0.5s 1s;\n    -o-transition:      opacity 1s,      -o-transform 0.5s 1s;\n    transition:         opacity 1s,         transform 0.5s 1s;\n}\n\n/*\n    Now we 'enable' the hint when presentation is initialized ...\n*/\n.impress-enabled .hint { display: block }\n\n/*\n    ... and we will show it when the first step (with id 'bored') is active.\n*/\n.impress-on-bored .hint {\n    /*\n        We remove the transparency and position the hint in its default fixed\n        position.\n    */\n    opacity: 1;\n\n    -webkit-transform: translateY(0px);\n    -moz-transform:    translateY(0px);\n    -ms-transform:     translateY(0px);\n    -o-transform:      translateY(0px);\n    transform:         translateY(0px);\n\n    /*\n        Now for fade in transition we have the oposite situation from the one\n        above.\n\n        First after 4.5s delay we animate the transform property to move the hint\n        into its correct position and after that we fade it in with opacity\n        transition.\n    */\n    -webkit-transition: opacity 1s 5s, -webkit-transform 0.5s 4.5s;\n    -moz-transition:    opacity 1s 5s,    -moz-transform 0.5s 4.5s;\n    -ms-transition:     opacity 1s 5s,     -ms-transform 0.5s 4.5s;\n    -o-transition:      opacity 1s 5s,      -o-transform 0.5s 4.5s;\n    transition:         opacity 1s 5s,         transform 0.5s 4.5s;\n}\n\n/*\n    And as the last thing there is a workaround for quite strange bug.\n    It happens a lot in Chrome. I don't remember if I've seen it in Firefox.\n\n    Sometimes the element positioned in 3D (especially when it's moved back\n    along Z axis) is not clickable, because it falls 'behind' the <body>\n    element.\n\n    To prevent this, I decided to make <body> non clickable by setting\n    pointer-events property to `none` value.\n    Value if this property is inherited, so to make everything else clickable\n    I bring it back on the #impress element.\n\n    If you want to know more about `pointer-events` here are some docs:\n    https://developer.mozilla.org/en/CSS/pointer-events\n\n    There is one very important thing to notice about this workaround - it makes\n    everything 'unclickable' except what's in #impress element.\n\n    So use it wisely ... or don't use at all.\n*/\n.impress-enabled                          { pointer-events: none }\n.impress-enabled #impress                 { pointer-events: auto }\n.impress-enabled #impress-toolbar         { pointer-events: auto }\n/*\n    There is one funny thing I just realized.\n\n    Thanks to this workaround above everything except #impress element is invisible\n    for click events. That means that the hint element is also not clickable.\n    So basically all of this transforms and delayed transitions trickery was probably\n    not needed at all...\n\n    But it was fun to learn about it, wasn't it?\n*/\n\n/*\n    That's all I have for you in this file.\n    Thanks for reading. I hope you enjoyed it at least as much as I enjoyed writing it\n    for you.\n*/\n", ""]);
 
 // exports
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-var stylesInDom = {};
-
-var	memoize = function (fn) {
-	var memo;
-
-	return function () {
-		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-		return memo;
-	};
-};
-
-var isOldIE = memoize(function () {
-	// Test for IE <= 9 as proposed by Browserhacks
-	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-	// Tests for existence of standard globals is to allow style-loader
-	// to operate correctly into non-standard environments
-	// @see https://github.com/webpack-contrib/style-loader/issues/177
-	return window && document && document.all && !window.atob;
-});
-
-var getElement = (function (fn) {
-	var memo = {};
-
-	return function(selector) {
-		if (typeof memo[selector] === "undefined") {
-			var styleTarget = fn.call(this, selector);
-			// Special case to return head of iframe instead of iframe itself
-			if (styleTarget instanceof window.HTMLIFrameElement) {
-				try {
-					// This will throw an exception if access to iframe is blocked
-					// due to cross-origin restrictions
-					styleTarget = styleTarget.contentDocument.head;
-				} catch(e) {
-					styleTarget = null;
-				}
-			}
-			memo[selector] = styleTarget;
-		}
-		return memo[selector]
-	};
-})(function (target) {
-	return document.querySelector(target)
-});
-
-var singleton = null;
-var	singletonCounter = 0;
-var	stylesInsertedAtTop = [];
-
-var	fixUrls = __webpack_require__(35);
-
-module.exports = function(list, options) {
-	if (typeof DEBUG !== "undefined" && DEBUG) {
-		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (!options.insertInto) options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (!options.insertAt) options.insertAt = "bottom";
-
-	var styles = listToStyles(list, options);
-
-	addStylesToDom(styles, options);
-
-	return function update (newList) {
-		var mayRemove = [];
-
-		for (var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-
-		if(newList) {
-			var newStyles = listToStyles(newList, options);
-			addStylesToDom(newStyles, options);
-		}
-
-		for (var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-
-			if(domStyle.refs === 0) {
-				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
-
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom (styles, options) {
-	for (var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-
-		if(domStyle) {
-			domStyle.refs++;
-
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles (list, options) {
-	var styles = [];
-	var newStyles = {};
-
-	for (var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = options.base ? item[0] + options.base : item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-
-		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
-		else newStyles[id].parts.push(part);
-	}
-
-	return styles;
-}
-
-function insertStyleElement (options, style) {
-	var target = getElement(options.insertInto)
-
-	if (!target) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-
-	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
-
-	if (options.insertAt === "top") {
-		if (!lastStyleElementInsertedAtTop) {
-			target.insertBefore(style, target.firstChild);
-		} else if (lastStyleElementInsertedAtTop.nextSibling) {
-			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			target.appendChild(style);
-		}
-		stylesInsertedAtTop.push(style);
-	} else if (options.insertAt === "bottom") {
-		target.appendChild(style);
-	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
-		var nextSibling = getElement(options.insertInto + " " + options.insertAt.before);
-		target.insertBefore(style, nextSibling);
-	} else {
-		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
-	}
-}
-
-function removeStyleElement (style) {
-	if (style.parentNode === null) return false;
-	style.parentNode.removeChild(style);
-
-	var idx = stylesInsertedAtTop.indexOf(style);
-	if(idx >= 0) {
-		stylesInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement (options) {
-	var style = document.createElement("style");
-
-	options.attrs.type = "text/css";
-
-	addAttrs(style, options.attrs);
-	insertStyleElement(options, style);
-
-	return style;
-}
-
-function createLinkElement (options) {
-	var link = document.createElement("link");
-
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	addAttrs(link, options.attrs);
-	insertStyleElement(options, link);
-
-	return link;
-}
-
-function addAttrs (el, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		el.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle (obj, options) {
-	var style, update, remove, result;
-
-	// If a transform function was defined, run it on the css
-	if (options.transform && obj.css) {
-	    result = options.transform(obj.css);
-
-	    if (result) {
-	    	// If transform returns a value, use that instead of the original css.
-	    	// This allows running runtime transformations on the css.
-	    	obj.css = result;
-	    } else {
-	    	// If the transform function returns a falsy value, don't add this css.
-	    	// This allows conditional loading of css
-	    	return function() {
-	    		// noop
-	    	};
-	    }
-	}
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-
-		style = singleton || (singleton = createStyleElement(options));
-
-		update = applyToSingletonTag.bind(null, style, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
-
-	} else if (
-		obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function"
-	) {
-		style = createLinkElement(options);
-		update = updateLink.bind(null, style, options);
-		remove = function () {
-			removeStyleElement(style);
-
-			if(style.href) URL.revokeObjectURL(style.href);
-		};
-	} else {
-		style = createStyleElement(options);
-		update = applyToTag.bind(null, style);
-		remove = function () {
-			removeStyleElement(style);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle (newObj) {
-		if (newObj) {
-			if (
-				newObj.css === obj.css &&
-				newObj.media === obj.media &&
-				newObj.sourceMap === obj.sourceMap
-			) {
-				return;
-			}
-
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag (style, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (style.styleSheet) {
-		style.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = style.childNodes;
-
-		if (childNodes[index]) style.removeChild(childNodes[index]);
-
-		if (childNodes.length) {
-			style.insertBefore(cssNode, childNodes[index]);
-		} else {
-			style.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag (style, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		style.setAttribute("media", media)
-	}
-
-	if(style.styleSheet) {
-		style.styleSheet.cssText = css;
-	} else {
-		while(style.firstChild) {
-			style.removeChild(style.firstChild);
-		}
-
-		style.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink (link, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/*
-		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-		and there is no publicPath defined then lets turn convertToAbsoluteUrls
-		on by default.  Otherwise default to the convertToAbsoluteUrls option
-		directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls) {
-		css = fixUrls(css);
-	}
-
-	if (sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = link.href;
-
-	link.href = URL.createObjectURL(blob);
-
-	if(oldSrc) URL.revokeObjectURL(oldSrc);
-}
 
 
 /***/ }),
@@ -20438,6 +23473,77 @@ module.exports = function (css) {
 
 /***/ }),
 /* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(37);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {"hmr":true}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(15)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!./classic-slides.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!./classic-slides.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(7)(undefined);
+// imports
+exports.i(__webpack_require__(38), "");
+
+// module
+exports.push([module.i, "/*\n  A common approach is to use googleapis.com to generate css for the webfonts you want to use.\n  The downside of this approach is that you have to be online. So below I have simply saved\n  the output of the googleapis url into a file. Then you of course also have to make sure\n  the webfonts are locally installed to make offline usage work. For Ubuntu (or Debian) I\n  successfully used the script from here to do that:\n  http://www.webupd8.org/2011/01/automatically-install-all-google-web.html\n*/\n\n/* @import url(http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic|Cutive+Mono); */\n\n\n\n/*\n    We display a fallback message for users with browsers that don't support\n    all the features required by it. All of the content will be still fully\n    accessible for them, but some more advanced effects would be missing.\n    When impress.js detects that browser supports all necessary CSS3 features,\n    the fallback-message style is hidden.\n*/\n\n.fallback-message {\n    font-family: sans-serif;\n    line-height: 1.3;\n\n    width: 780px;\n    padding: 10px 10px 0;\n    margin: 20px auto;\n\n    border: 1px solid #E4C652;\n    border-radius: 10px;\n    background: #EEDC94;\n}\n\n.fallback-message p {\n    margin-bottom: 10px;\n}\n\n.impress-supported .fallback-message {\n    display: none;\n}\n\n\n/*\n  The body background is the bacgkround of \"everything\". Many\n  impress.js tools call it the \"surface\". It could also be a\n  picture or pattern, but we leave it as light gray.\n*/\n\nbody {\n    font-family: 'PT Sans', sans-serif;\n    min-height: 740px;\n\n    background: rgb(215, 215, 215);\n    color: rgb(102, 102, 102);\n}\n\n/*\n    Now let's style the presentation steps.\n*/\n\n.step {\n    position: relative;\n    width: 900px;\n    padding: 40px;\n    margin: 20px auto;\n\n    box-sizing:         border-box;\n\n    font-family: 'PT Serif', georgia, serif;\n    font-size: 48px;\n    line-height: 1.5;\n}\n/*\n    Make inactive steps a little bit transparent.\n*/\n.impress-enabled .step {\n    margin: 0;\n    opacity: 0.3;\n    transition:         opacity 1s;\n}\n\n.impress-enabled .step.active { opacity: 1 }\n\n/*\n    Speaker notes allow you to write comments within the steps, that will not\n    be displayed as part of the presentation. However, they will be picked up\n    and displayed by impressConsole.js when integrated.\n*/\n\n.notes {\n    display: none;\n}\n\n/*\n    These 'slide' step styles were heavily inspired by HTML5 Slides:\n    http://html5slides.googlecode.com/svn/trunk/styles.css\n\n    Note that we also use a background image, again just to facilitate a common\n    feature from PowerPoint and LibreOffice worlds. In this case the background\n    image is just the impress.js favicon - as if it were a company logo or something.\n\n*/\n.slide {\n    display: block;\n\n    width: 900px;\n    height: 700px;\n    padding: 40px 60px;\n\n    background-image: url(" + __webpack_require__(39) + ");\n    background-color: white;\n    border: 1px solid rgba(0, 0, 0, .3);\n    border-radius: 10px;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);\n\n    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);\n\n    font-family: 'Open Sans', Arial, sans-serif;\n    font-size: 30px;\n    letter-spacing: -1px;\n}\n\n\n.slide h1,\n.slide h2,\n.slide h3 {\n    margin-bottom: 0.5em;\n    margin-top: 0.5em;\n    text-align: center;\n}\n\n.slide p {\n    text-align: center;\n    margin: 0.7em;\n}\n\n.slide li {\n    margin: 0.2em;\n}\n\n/* Highlight.js used for coloring pre > code blocks. */\n.slide pre > code {\n    font-size: 14px;\n    text-shadow: 0 0 0 rgba(0, 0, 0, 0);\n}\n\n/* Inline code, no Highlight.js */\ncode {\n    font-family: \"Cutive mono\",\"Courier New\", monospace;\n}\n\n\na {\n    color: inherit;\n    text-decoration: none;\n    padding: 0 0.1em;\n    background: rgba(200,200,200,0.2);\n    text-shadow: -1px 1px 2px rgba(100,100,100,0.9);\n    border-radius: 0.2em;\n    border-bottom: 1px solid rgba(100,100,100,0.2);\n    border-left:   1px solid rgba(100,100,100,0.2);\n\n    transition:         0.5s;\n}\na:hover,\na:focus {\n    background: rgba(200,200,200,1);\n    text-shadow: -1px 1px 2px rgba(100,100,100,0.5);\n}\n\nblockquote {\n    font-family: 'PT Serif';\n    font-style: italic;\n    font-weight: 400;\n}\n\nem {\n    text-shadow: 0 2px 2px rgba(0, 0, 0, .3);\n}\n\nstrong {\n    text-shadow: -1px 1px 2px rgba(100,100,100,0.5);\n}\n\nq {\n    font-family: 'PT Serif';\n    font-style: italic;\n    font-weight: 400;\n    text-shadow: 0 2px 2px rgba(0, 0, 0, .3);\n}\n\nstrike {\n    opacity: 0.7;\n}\n\nsmall {\n    font-size: 0.4em;\n}\n\nimg {\n    width: 300px\n}\n\n.slide .right {\n    float: right;\n    margin-left:   40px;\n    margin-right:   0px;\n    margin-top:    20px;\n    margin-bottom: 20px;\n}\n.slide .left {\n    float: left;\n    margin-right:  40px;\n    margin-left:    0px;\n    margin-top:    20px;\n    margin-bottom: 20px;\n}\n.slide .top {\n    position: absolute;\n    top: 20px;\n    margin-bottom:  20px;\n    margin-top:      0px;\n}\n.slide .bottom {\n    position: absolute;\n    bottom: 20px;\n    margin-bottom:   0px;\n    margin-top:     20px;\n}\n\n/*\n    Specific styles for: .title slides\n*/\n\n.title {\n    background-image: url(" + __webpack_require__(40) + ");\n}\n\n.title h1,\n.title h2,\n.title h3 {\n    position: absolute;\n    left: 45px; /* slide width is 900px, so this is like a 5% margin on both sides */\n    width: 90%;\n    text-align: center;\n}\n.title h1 { top: 50px; }\n.title h2 { top: 400px; }\n.title h3 { top: 500px; }\n\n\n\n/* Styles for animating the contents of a slide, such as a img, p, li or span element. ********/\n\n/*\n fly-in class starts from a position outside the slide, then flies into it's correct position.\n*/\n.future .fly-in {\n    transform: translateY(-700px);\n    opacity: 0.0; /* Make it invisible, just so it doesn't clutter some other slide that might be in the position where we moved it */\n}\n.present .fly-in {\n    transform:         translateY(0px);\n    opacity: 1.0;\n    transition:         2s;\n}\n.past .fly-out {\n    transform:         translateY(700px);\n    opacity: 0.0;\n    transition:         2s;\n}\n\n/*\n   Fade-in/out is a straightforward fade. Give it enough seconds that all browsers render it clearly.\n*/\n.future .fade-in {\n    opacity: 0.0;\n}\n.present .fade-in {\n    opacity: 1.0;\n    transition: 3s;\n}\n.past .fade-out {\n    opacity: 0.0;\n    transition: 3s;\n}\n/*\n    Zoom-in.\n*/\n.future  .zoom-in {\n    transform:        scale(10);\n    opacity: 0.0;\n}\n.present .zoom-in {\n    transform:         scale(1);\n    opacity: 1.0;\n    transition: 3s;\n}\n.past  .zoom-out {\n    transform:        scale(10);\n    opacity: 0.0;\n}\n\n/*\n  This version of impress.js supports plugins, and in particular, a UI toolbar\n  plugin that allows easy navigation between steps and autoplay.\n*/\n.impress-enabled div#impress-toolbar {\n    position: fixed;\n    right: 1px;\n    bottom: 1px;\n    opacity: 0.6;\n    z-index: 10;\n}\n.impress-enabled div#impress-toolbar > span {\n    margin-right: 10px;\n}\n\n/*\n    With help from the mouse-timeout plugin, we can hide the toolbar and\n    have it show only when you move/click/touch the mouse.\n*/\nbody.impress-mouse-timeout div#impress-toolbar {\n    display: none;\n}\n\n/*\n    In fact, we can hide the mouse cursor itself too, when mouse isn't used.\n*/\nbody.impress-mouse-timeout {\n    cursor: none;\n}\n\n\n\n/* Progress bar */\n.impress-progressbar {\n  position: absolute;\n  right: 118px;\n  bottom: 1px;\n  left: 118px;\n  border-radius: 7px;\n  border: 2px solid rgba(100, 100, 100, 0.2);\n}\n.impress-progressbar DIV {\n  width: 0;\n  height: 2px;\n  border-radius: 5px;\n  background: rgba(75, 75, 75, 0.4);\n  transition: width 1s linear;\n}\n.impress-progress {\n  position: absolute;\n  left: 59px;\n  bottom: 1px;\n  text-align: left;\n  font-size: 10pt;\n  opacity: 0.6;\n}\n\n/* Help popup plugin */\n.impress-enabled #impress-help {\n    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);\n    color: #EEEEEE;\n    font-size: 80%;\n    position: fixed;\n    left: 2em;\n    bottom: 2em;\n    width: 24em;\n    border-radius: 1em;\n    padding: 1em;\n    text-align: center;\n    z-index: 100;\n    font-family: Verdana, Arial, Sans;\n}\n.impress-enabled #impress-help td {\n    padding-left: 1em;\n    padding-right: 1em;\n}\n\n/* Substep plugin */\n\n#impress .step .substep {\n    opacity: 0;\n}\n\n#impress .step .substep.substep-visible {\n    opacity: 1;\n    transition: opacity 1s;\n}\n\n/*\n    Styles for specific slides.\n*/\n\n/* The bar graph for Acme Inc profits */\n\n#acme-graph-bottom {\n    position: absolute;\n    bottom: 100px;\n    left: 440px;\n    background-color: black;\n    width: 410px;\n    height: 2px;\n}\n\n/* height: is set from javascript */\n#acme-graph-q1,\n#acme-graph-q2,\n#acme-graph-q3,\n#acme-graph-q4 {\n    border: solid 1px black;\n    width: 70px;\n    margin-left: 10px;\n    position: absolute;\n    bottom: 100px;\n}\n\n#acme-graph-q1 {\n    background-color: red;\n    left: 450px;\n}\n\n#acme-graph-q2 {\n    background-color: blue;\n    left: 550px;\n}\n\n#acme-graph-q3 {\n    background-color: green;\n    left: 650px;\n}\n\n#acme-graph-q4 {\n    background-color: purple;\n    left: 750px;\n}\n\n/*\n    And as the last thing there is a workaround for quite strange bug.\n    It happens a lot in Chrome. I don't remember if I've seen it in Firefox.\n\n    Sometimes the element positioned in 3D (especially when it's moved back\n    along Z axis) is not clickable, because it falls 'behind' the <body>\n    element.\n\n    To prevent this, I decided to make <body> non clickable by setting\n    pointer-events property to `none` value.\n    Value if this property is inherited, so to make everything else clickable\n    I bring it back on the #impress element.\n\n    If you want to know more about `pointer-events` here are some docs:\n    https://developer.mozilla.org/en/CSS/pointer-events\n\n    There is one very important thing to notice about this workaround - it makes\n    everything 'unclickable' except what's in #impress element.\n\n    So use it wisely ... or don't use at all.\n*/\n.impress-enabled                          { pointer-events: none }\n.impress-enabled #impress                 { pointer-events: auto }\n.impress-enabled #impress-toolbar         { pointer-events: auto }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(7)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "/* latin-ext */\n@font-face {\n  font-family: 'Cutive Mono';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Cutive Mono'), local('CutiveMono-Regular'), url(http://fonts.gstatic.com/s/cutivemono/v4/N5odNRruTwjvCM8y77PhQSYE0-AqJ3nfInTTiDXDjU4.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Cutive Mono';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Cutive Mono'), local('CutiveMono-Regular'), url(http://fonts.gstatic.com/s/cutivemono/v4/N5odNRruTwjvCM8y77PhQY4P5ICox8Kq3LLUNMylGO4.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/K88pR3goAWT7BTt32Z01mxJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/RjgO7rYTmqiVp7vzi-Q5URJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* greek-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/LWCjsQkB6EMdfHrEVqA1KRJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+1F00-1FFF;\n}\n/* greek */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/xozscpT2726on7jbcb_pAhJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0370-03FF;\n}\n/* vietnamese */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/59ZRklaO5bWGqF5A9baEERJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/u-WUoqrET9fUeobQW7jkRRJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3VtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSq-j2U0lmluP9RWlSytm3ho.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSpX5f-9o1vgP2EXwfjgl7AY.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* greek-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNShWV49_lSm1NYrwo-zkhivY.woff2) format('woff2');\n  unicode-range: U+1F00-1FFF;\n}\n/* greek */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSqaRobkAwv3vxw3jMhVENGA.woff2) format('woff2');\n  unicode-range: U+0370-03FF;\n}\n/* vietnamese */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSv8zf_FOSsgRmwsS7Aa9k2w.woff2) format('woff2');\n  unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSj0LW-43aMEzIO6XUTLjad8.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: normal;\n  font-weight: 600;\n  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSugdm0LZdjqr5-oayXSOefg.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBjTOQ_MqJVwkKsUn0wKzc2I.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBjUj_cnvWIuuBMVgbX098Mw.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* greek-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBkbcKLIaa1LC45dFaAfauRA.woff2) format('woff2');\n  unicode-range: U+1F00-1FFF;\n}\n/* greek */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBmo_sUJ8uO4YLWRInS22T3Y.woff2) format('woff2');\n  unicode-range: U+0370-03FF;\n}\n/* vietnamese */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBr6up8jxqWt8HVA3mDhkV_0.woff2) format('woff2');\n  unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBiYE0-AqJ3nfInTTiDXDjU4.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBo4P5ICox8Kq3LLUNMylGO4.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxmgpAmOCqD37_tyH_8Ri5MM.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxsPNMTLbnS9uQzHQlYieHUU.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* greek-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxgyhumQnPMBCoGYhRaNxyyY.woff2) format('woff2');\n  unicode-range: U+1F00-1FFF;\n}\n/* greek */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxhUVAXEdVvYDDqrz3aeR0Yc.woff2) format('woff2');\n  unicode-range: U+0370-03FF;\n}\n/* vietnamese */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxlf4y_3s5bcYyyLIFUSWYUU.woff2) format('woff2');\n  unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxnywqdtBbUHn3VPgzuFrCy8.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 600;\n  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxl2umOyRU7PgRiv8DXcgJjk.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Sans'), local('PTSans-Regular'), url(http://fonts.gstatic.com/s/ptsans/v8/JX7MlXqjSJNjQvI4heMMGvY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Sans'), local('PTSans-Regular'), url(http://fonts.gstatic.com/s/ptsans/v8/vtwNVMP8y9C17vLvIBNZI_Y6323mHUZFJMgTvxaG2iE.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Sans'), local('PTSans-Regular'), url(http://fonts.gstatic.com/s/ptsans/v8/9kaD4V2pNPMMeUVBHayd7vY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Sans'), local('PTSans-Regular'), url(http://fonts.gstatic.com/s/ptsans/v8/ATKpv8nLYAKUYexo8iqqrg.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Sans Bold'), local('PTSans-Bold'), url(http://fonts.gstatic.com/s/ptsans/v8/kTYfCWJhlldPf5LnG4ZnHCEAvth_LlrfE80CYdSH47w.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Sans Bold'), local('PTSans-Bold'), url(http://fonts.gstatic.com/s/ptsans/v8/g46X4VH_KHOWAAa-HpnGPiEAvth_LlrfE80CYdSH47w.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Sans Bold'), local('PTSans-Bold'), url(http://fonts.gstatic.com/s/ptsans/v8/hpORcvLZtemlH8gI-1S-7iEAvth_LlrfE80CYdSH47w.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Sans Bold'), local('PTSans-Bold'), url(http://fonts.gstatic.com/s/ptsans/v8/0XxGQsSc1g4rdRdjJKZrNPk_vArhqVIZ0nv9q090hN8.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Sans Italic'), local('PTSans-Italic'), url(http://fonts.gstatic.com/s/ptsans/v8/GpWpM_6S4VQLPNAQ3iWvVRJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Sans Italic'), local('PTSans-Italic'), url(http://fonts.gstatic.com/s/ptsans/v8/7dSh6BcuqDLzS2qAASIeuhJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Sans Italic'), local('PTSans-Italic'), url(http://fonts.gstatic.com/s/ptsans/v8/DVKQJxMmC9WF_oplMzlQqRJtnKITppOI_IvcXXDNrsc.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Sans Italic'), local('PTSans-Italic'), url(http://fonts.gstatic.com/s/ptsans/v8/PIPMHY90P7jtyjpXuZ2cLFtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Sans Bold Italic'), local('PTSans-BoldItalic'), url(http://fonts.gstatic.com/s/ptsans/v8/lILlYDvubYemzYzN7GbLkK-j2U0lmluP9RWlSytm3ho.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Sans Bold Italic'), local('PTSans-BoldItalic'), url(http://fonts.gstatic.com/s/ptsans/v8/lILlYDvubYemzYzN7GbLkJX5f-9o1vgP2EXwfjgl7AY.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Sans Bold Italic'), local('PTSans-BoldItalic'), url(http://fonts.gstatic.com/s/ptsans/v8/lILlYDvubYemzYzN7GbLkD0LW-43aMEzIO6XUTLjad8.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Sans';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Sans Bold Italic'), local('PTSans-BoldItalic'), url(http://fonts.gstatic.com/s/ptsans/v8/lILlYDvubYemzYzN7GbLkOgdm0LZdjqr5-oayXSOefg.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Serif'), local('PTSerif-Regular'), url(http://fonts.gstatic.com/s/ptserif/v8/5hX15RUpPERmeybVlLQEWBTbgVql8nDJpwnrE27mub0.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Serif'), local('PTSerif-Regular'), url(http://fonts.gstatic.com/s/ptserif/v8/fU0HAfLiPHGlZhZpY6M7dBTbgVql8nDJpwnrE27mub0.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Serif'), local('PTSerif-Regular'), url(http://fonts.gstatic.com/s/ptserif/v8/CPRt--GVMETgA6YEaoGitxTbgVql8nDJpwnrE27mub0.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 400;\n  src: local('PT Serif'), local('PTSerif-Regular'), url(http://fonts.gstatic.com/s/ptserif/v8/I-OtoJZa3TeyH6D9oli3ifesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Serif Bold'), local('PTSerif-Bold'), url(http://fonts.gstatic.com/s/ptserif/v8/QABk9IxT-LFTJ_dQzv7xpDTOQ_MqJVwkKsUn0wKzc2I.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Serif Bold'), local('PTSerif-Bold'), url(http://fonts.gstatic.com/s/ptserif/v8/QABk9IxT-LFTJ_dQzv7xpDUj_cnvWIuuBMVgbX098Mw.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Serif Bold'), local('PTSerif-Bold'), url(http://fonts.gstatic.com/s/ptserif/v8/QABk9IxT-LFTJ_dQzv7xpCYE0-AqJ3nfInTTiDXDjU4.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: normal;\n  font-weight: 700;\n  src: local('PT Serif Bold'), local('PTSerif-Bold'), url(http://fonts.gstatic.com/s/ptserif/v8/QABk9IxT-LFTJ_dQzv7xpI4P5ICox8Kq3LLUNMylGO4.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Serif Italic'), local('PTSerif-Italic'), url(http://fonts.gstatic.com/s/ptserif/v8/O_WhD9hODL16N4KLHLX7xSEAvth_LlrfE80CYdSH47w.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Serif Italic'), local('PTSerif-Italic'), url(http://fonts.gstatic.com/s/ptserif/v8/3Nwg9VzlwLXPq3fNKwVRMCEAvth_LlrfE80CYdSH47w.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Serif Italic'), local('PTSerif-Italic'), url(http://fonts.gstatic.com/s/ptserif/v8/b31S45a_TNgaBApZhTgE6CEAvth_LlrfE80CYdSH47w.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 400;\n  src: local('PT Serif Italic'), local('PTSerif-Italic'), url(http://fonts.gstatic.com/s/ptserif/v8/03aPdn7fFF3H6ngCgAlQzPk_vArhqVIZ0nv9q090hN8.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n/* cyrillic-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Serif Bold Italic'), local('PTSerif-BoldItalic'), url(http://fonts.gstatic.com/s/ptserif/v8/Foydq9xJp--nfYIx2TBz9ede9INZm0R8ZMJUtfOsxrw.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Serif Bold Italic'), local('PTSerif-BoldItalic'), url(http://fonts.gstatic.com/s/ptserif/v8/Foydq9xJp--nfYIx2TBz9bpHcMS0zZe4mIYvDKG2oeM.woff2) format('woff2');\n  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Serif Bold Italic'), local('PTSerif-BoldItalic'), url(http://fonts.gstatic.com/s/ptserif/v8/Foydq9xJp--nfYIx2TBz9RHJTnCUrjaAm2S9z52xC3Y.woff2) format('woff2');\n  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'PT Serif';\n  font-style: italic;\n  font-weight: 700;\n  src: local('PT Serif Bold Italic'), local('PTSerif-BoldItalic'), url(http://fonts.gstatic.com/s/ptserif/v8/Foydq9xJp--nfYIx2TBz9YWiMMZ7xLd792ULpGE4W_Y.woff2) format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "efbb0bdbe5ff09e7bf95da6642fd2caa.png";
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "4f34c1b103764076513b7e11e7d56414.png";
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
